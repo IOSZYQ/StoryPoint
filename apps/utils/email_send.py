@@ -4,8 +4,9 @@ __date__ = '2018/3/8 下午2:53'
 
 from random import Random
 from django.core.mail import send_mail
+from django.contrib.auth.hashers import check_password,make_password
 
-from users.models import EmailVerifyRecord
+from users.models import EmailVerifyRecord, UserProfile
 from StoryPoint.settings import EMAIL_FROM
 
 def random_str(randomlength=8):
@@ -42,3 +43,13 @@ def send_sp_email(email, send_type="register"):
         send_status = send_mail(email_title, email_body, EMAIL_FROM, [email])
         if send_status:
             pass
+
+def send_forget_email(email):
+    user = UserProfile.objects.get(email=email)
+    password = random_str(randomlength=8)
+    user.password = make_password(password)
+    user.save()
+
+    email_title = "路书SP系统重置密码链接"
+    email_body = "你的新密码是:{0}".format(password)
+    send_status = send_mail(email_title, email_body, EMAIL_FROM, [email])

@@ -5,11 +5,12 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import check_password,make_password
+from django.http import HttpResponse
 
 
 from .forms import *
 from .models import UserProfile,EmailVerifyRecord
-from utils.email_send import send_sp_email
+from utils.email_send import send_sp_email, send_forget_email
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -83,9 +84,14 @@ class ForgetPwdView(View):
         return render(request, 'forgetpwd.html', {"forget_form":forget_form})
     def post(self, request):
         forget_form = ForgetForm(request.POST)
-        email = request.POST.get("email","")
-        send_sp_email(email, "forget")
-        return JsonResponse("{'status':'success'}", content_type='application/json')
+        if forget_form.is_valid():
+            email = request.POST.get("email","")
+            user = UserProfile.objects.get(email=email)
+            if user != None:
+                send_forget_email(email=email)
+                return HttpResponse("{'status':'success','msg':'新密码已发送至您邮箱,请查收'}", content_type='application/json')
+            else:
+                return HttpResponse("{'status':'fail', 'msg':'用户不存在,请检查邮箱是否正确'}", content_type='application/json')
 
 class ResetView(View):
     def get(self, request, active_code):
