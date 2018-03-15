@@ -91,13 +91,13 @@ class ForgetPwdView(View):
             user = UserProfile.objects.filter(email=email).last()
             if user != None:
                 send_forget_email(email=email)
-                a = {'status': 'success', 'msg': '新密码已发送至您邮箱,请查收'}
+                a = {'status': '0', 'msg': '新密码已发送至您邮箱,请查收'}
                 return HttpResponse(json.dumps(a), content_type='application/json')
             else:
-                a = {'status': 'fail', 'msg': '用户不存在,请检查邮箱是否正确'}
+                a = {'status': '-1', 'msg': '用户不存在,请检查邮箱是否正确'}
                 return HttpResponse(json.dumps(a), content_type='application/json')
         else:
-            a = {'status': 'fail', 'msg': '邮箱格式不正确'}
+            a = {'status': '-1', 'msg': '邮箱格式不正确'}
             return HttpResponse(json.dumps(a), content_type='application/json')
 
 
@@ -107,24 +107,30 @@ class ResetView(View):
         if all_records:
             for record in all_records:
                 email = record.email
-                return render(request,'password_reset.html',{"email":email})
+                return HttpResponse("{'status':'0','msg':'新密码已发送至您邮箱,请查收'}", content_type='application/json')
+            else:
+                return HttpResponse("{'status':'-1', 'msg':'用户不存在,请检查邮箱是否正确'}", content_type='application/json')
         else:
-            return render(request, 'active_fail.html')
-        return render(request, 'login.html')
+            return HttpResponse("{'status':'-1', 'msg':'邮箱格式不正确'}", content_type='application/json')
 
 class ModifyPwdView(View):
     def post(self, request):
         modify_form = ModifyPwdForm(request.POST)
-        email = request.POST.get("email", "")
         if modify_form.is_valid():
+            email = request.POST.get("email", "")
+            pass_word = request.POST.get("oldpassword", "")
             pwd1 = request.POST.get("password1", "")
             pwd2 = request.POST.get("password2", "")
             if pwd1 != pwd2:
-                return render(request,'password_reset.html',{"email":email,"msg":"密码不一致"})
-            user = UserProfile.objects.get(email=email)
-            user.password = make_password(pwd2)
-            user.save()
-            return render(request,"login.html")
+                return HttpResponse("{'status':'-1', 'msg':'两次密码不一致'}", content_type='application/json')
+            user = authenticate(email=email, password=pass_word)
+            if user is not None:
+                user = UserProfile.objects.get(email=email)
+                user.password = make_password(pwd2)
+                user.save()
+                return HttpResponse("{'status':'0','msg':'密码更改成功'}", content_type='application/json')
+            else:
+                return HttpResponse("{'status':'-1', 'msg':'密码错误'}", content_type='application/json')
         else:
-            return render(request, 'password_reset.html', {"email": email, "modify_form": "modify_form"})
+            return HttpResponse("{'status':'-1', 'msg':'密码格式不正确'}", content_type='application/json')
 

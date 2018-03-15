@@ -58,7 +58,7 @@ function forgot() {
         success: function (data) {
             console.log(data.status)
 
-            if (data.status == "success") {
+            if (data.status == 0) {
                 $('.forgot-password-modal').modal('toggle')
                 $('.forgot-password-finish-modal').modal('show')
             }
