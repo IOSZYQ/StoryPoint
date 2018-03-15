@@ -1,37 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="../css/main.css" rel="stylesheet">
-    <link href="../css/project-detail.css" rel="stylesheet">
-    <script src="../js/main.js"></script>
-    <meta charset="UTF-8">
-    <title>项目详情</title>
-</head>
-<body>
-
-<div class="container">
-
-    <div class="header_container">
-        <div class="row">
-            <div class="col-md-8"></div>
-            <div class="col-md-4">
-                侯洋
-                <a>修改密码</a>
-                <a href="login.html">退出登录</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="title"><h1>路书研发部项目管理</h1></div>
-
-    <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="./project.html">项目</a></li>
-        <li role="presentation"><a href="./team.html">团队</a></li>
-        <li role="presentation"><a href="kpi-team.html">绩效管理</a></li>
-    </ul>
-
+{% extends 'base.html' %}
+{% block title %}项目详情{% endblock %}
+{% block content %}
     <table class="table table-bordered detailContainer">
         <tbody>
         <tr>
@@ -491,14 +460,5 @@
         </div>
     </div>
 
-</div> <!-- /container -->
+{% block content %}
 
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-<script src="../js/bootstrap-datepicker.js"></script>
-
-</body>
-</html>
