@@ -9,7 +9,7 @@ from django.http import HttpResponse
 
 from .forms import *
 from .models import UserProfile,EmailVerifyRecord
-from utils.email_send import send_sp_email
+from utils.email_send import send_sp_email, send_forget_email
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -85,10 +85,12 @@ class ForgetPwdView(View):
         forget_form = ForgetForm(request.POST)
         if forget_form.is_valid():
             email = request.POST.get("email","")
-            send_sp_email(email, "forget")
-            return HttpResponse("{'status':'success'}", content_type='application/json')
-        else:
-            return HttpResponse("{'status':'fail'}", content_type='application/json')
+            user = UserProfile.objects.get(email=email)
+            if user != None:
+                send_forget_email(email=email)
+                return HttpResponse("{'status':'success','msg':'新密码已发送至您邮箱,请查收'}", content_type='application/json')
+            else:
+                return HttpResponse("{'status':'fail', 'msg':'用户不存在,请检查邮箱是否正确'}", content_type='application/json')
 
 class ResetView(View):
     def get(self, request, active_code):
