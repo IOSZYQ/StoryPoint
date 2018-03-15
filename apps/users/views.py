@@ -90,11 +90,14 @@ class ForgetPwdView(View):
             user = UserProfile.objects.filter(email=email).last()
             if user != None:
                 send_forget_email(email=email)
-                return HttpResponse(dumps("{'status':'0','msg':'新密码已发送至您邮箱,请查收'}"), content_type='application/json')
+                result = {'status':'0','msg':'新密码已发送至您邮箱,请查收'}
+                return HttpResponse(dumps(result), content_type='application/json')
             else:
-                return HttpResponse(dumps("{'status':'-1', 'msg':'用户不存在,请检查邮箱是否正确'}"), content_type='application/json')
+                result = {'status':'-1', 'msg':'用户不存在,请检查邮箱是否正确'}
+                return HttpResponse(dumps(result), content_type='application/json')
         else:
-            return HttpResponse(dumps("{'status':'-1', 'msg':'邮箱格式不正确'}"), content_type='application/json')
+            result = {'status':'-1', 'msg':'邮箱格式不正确'}
+            return HttpResponse(dumps(result), content_type='application/json')
 
 class ModifyPwdView(View):
     def post(self, request):
@@ -105,16 +108,19 @@ class ModifyPwdView(View):
             pwd1 = request.POST.get("password1", "")
             pwd2 = request.POST.get("password2", "")
             if pwd1 != pwd2:
-
-                return HttpResponse(dumps("{'status':'-1', 'msg':'两次密码不一致'}"), content_type='application/json')
+                result = {'status':'-1', 'msg':'两次密码不一致'}
+                return HttpResponse(dumps(result), content_type='application/json')
             user = authenticate(email=email, password=pass_word)
             if user is not None:
                 user = UserProfile.objects.get(email=email)
                 user.password = make_password(pwd2)
                 user.save()
-                return HttpResponse(dumps("{'status':'0','msg':'密码更改成功'}"), content_type='application/json')
+                result = {'status':'0','msg':'密码更改成功'}
+                return HttpResponse(dumps(result), content_type='application/json')
             else:
-                return HttpResponse(dumps("{'status':'-1', 'msg':'密码错误'}"), content_type='application/json')
+                result = {'status':'-1', 'msg':'密码错误'}
+                return HttpResponse(dumps(result), content_type='application/json')
         else:
-            return HttpResponse(dumps("{'status':'-1', 'msg':'密码格式不正确'}"), content_type='application/json')
+            result = {'status':'-1', 'msg':'密码格式不正确'}
+            return HttpResponse(dumps(result), content_type='application/json')
 
