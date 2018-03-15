@@ -1,6 +1,19 @@
 function forgot() {
-    $('.forgot-password-modal').modal('toggle')
-    $('.forgot-password-finish-modal').modal('show')
+
+    $.post("/forget",
+        {
+            username: $("#email").val()
+        },
+    function(data){
+        var response = JSON.parse(data);
+        if (response.result) {
+            $('.forgot-password-modal').modal('toggle')
+            $('.forgot-password-finish-modal').modal('show')
+        }
+        else {
+
+        }
+    });
 }
 
 function modifyPassword() {
