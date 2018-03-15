@@ -19,5 +19,6 @@ class ForgetForm(forms.Form):
     # captcha = CaptchaField(error_messages={"invalid":"验证码错误"})
 
 class ModifyPwdForm(forms.Form):
+    oldpassword  = forms.CharField(required=True, min_length=6)
     password1 = forms.CharField(required=True, min_length=6)
     password2 = forms.CharField(required=True, min_length=6)
