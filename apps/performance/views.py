@@ -143,17 +143,107 @@ class DepartmentPerformanceView(View):
 
 class GroupPerformanceView(View):
     def post(self, request):
-        start = request.POST.get('start', '')
-        end = request.POST.get('end', '')
-        all_project = Project.objects.filter(end_time__in=[start, end])
+        all_project = Project.objects.all()
+        group_id = request.GET.get('group', '')
+        group_id = 2
+        group = Group.objects.get(pk=group_id)
+        if group != None:
+            start_time = request.GET.get('start', '')
+            end_time = request.GET.get('end', '')
+            start_time = '2018-1'
+            end_time = '2018-3'
+            if start_time and end_time:
+                start = getMonthFirstDay(start_time)
+                end = getMonthLastDay(end_time)
+                months = (end.month - start.month + 1) + (end.year - start.year) * 12
+                all_project = all_project.filter(end_time__range=[start, end])
+            groupInfo = []
+            group_all_sp = 0
+            for project in all_project:
+                if project.executing > 0 and project.acceptance > 0:
+                    weight = project.weight
+                    time = project.getTimeProportion()
+                    executing = project.getAcceptanceBugProportion()
+                    release = project.getReleaseBugProportion()
+                    impression = project.impression
+                    groupResult = []
+                    task = project.project_task.filter(group_id=group_id).last()
+                    if task != None:
+                        group_weight = group.getScore(time=time, acceptance=executing, release=release,
+                                                      impression=impression)
+                        group_sp = task.gsp * group_weight * weight
+                        group_all_sp += group_sp
+                        personInfo = []
+                        for person_task in task.person_task.all():
+                            person_task_sp = person_task.psp * group_weight * weight
+                            tasksp = task.gsp * group_weight * weight
+                            # 项目经理的可获得「项目SP值*5%」的个人SP值
+                            if person_task.user.id == project.manager_id:
+                                person_task_sp += project.getSP() * 0.05
+                            # 小组领导可获得「小组任务SP值*10%」的个人SP值
+                            if person_task.user.id == task.group.id:
+                                person_task_sp += tasksp * 0.1
+                            personInfo.append({"name": person_task.user.username,
+                                               "psp": person_task_sp})
+                        groupInfo.append({"name": project.name,
+                                          "time": "{0}-{1}".format(project.start_time, project.end_time),
+                                          "sp": group_sp,
+                                          "user": personInfo})
+            score = 100 if group_all_sp / months > 1 else group_all_sp / months * 100
+            result = {"score": score,
+                      "sp": group_all_sp,
+                      "group": groupInfo}
 
         return render(request, 'performance.html', {})
 
 class UserPerformanceView(View):
     def post(self, request):
-        start = request.POST.get('start', '')
-        end = request.POST.get('end', '')
-        all_project = Project.objects.filter(end_time__in=[start, end])
+        all_project = Project.objects.all()
+        user_id = request.GET.get('user', '')
+        user_id = 2
+        user = UserProfile.objects.get(pk=user_id)
+        if user != None:
+            start_time = request.GET.get('start', '')
+            end_time = request.GET.get('end', '')
+            start_time = '2018-1'
+            end_time = '2018-3'
+            if start_time and end_time:
+                start = getMonthFirstDay(start_time)
+                end = getMonthLastDay(end_time)
+                months = (end.month - start.month + 1) + (end.year - start.year) * 12
+                all_project = all_project.filter(end_time__range=[start, end])
+            userInfo = []
+            user_all_sp = 0
+            for project in all_project:
+                if project.executing > 0 and project.acceptance > 0:
+                    all_task = project.project_task.all()
+                    for task in all_task:
+                        person_task = task.person_task.filter(user_id=user_id).last()
+                        if person_task != None:
+                            weight = project.weight
+                            time = project.getTimeProportion()
+                            executing = project.getAcceptanceBugProportion()
+                            release = project.getReleaseBugProportion()
+                            impression = project.impression
+                            group_weight = task.group.getScore(time=time, acceptance=executing, release=release,
+                                                               impression=impression)
+                            person_task_sp = person_task.psp * group_weight * weight
+                            tasksp = task.gsp * group_weight * weight
+                            # 项目经理的可获得「项目SP值*5%」的个人SP值
+                            if person_task.user.id == project.manager_id:
+                                person_task_sp += project.getSP() * 0.05
+                            # 小组领导可获得「小组任务SP值*10%」的个人SP值
+                            if person_task.user.id == task.group.id:
+                                person_task_sp += tasksp * 0.1
+                            user_all_sp += person_task_sp
+                            userInfo.append({"project": project.name,
+                                             "time": "{0}-{1}".format(project.start_time, project.end_time),
+                                             "name": person_task.user.username,
+                                             "sp": person_task_sp})
+            score = 100 if user_all_sp / months > 100 else user_all_sp / months / 100
+            result = {"score": score,
+                      "sp": user_all_sp,
+                      "user": userInfo}
 
         return render(request, 'performance.html', {})
 
@@ -180,31 +270,4 @@ def getMonthLastDay(year_month=None):
                     lastDay = date(year=year,month=month+1, day=1) - timedelta(days=1)
                 return lastDay
     return datetime.date(year=2050,month=1,day=1)
-
-
-# def getMonthFirstDayAndLastDay(year=None, month=None):
-#     """
-#     :param year: 年份，默认是本年，可传int或str类型
-#     :param month: 月份，默认是本月，可传int或str类型
-#     :return: firstDay: 当月的第一天，datetime.date类型
-#               lastDay: 当月的最后一天，datetime.date类型
-#     """
-#     if year:
-#         year = int(year)
-#     else:
-#         year = datetime.date.today().year
-#
-#     if month:
-#         month = int(month)
-#     else:
-#         month = datetime.date.today().month
-#
-#     # 获取当月第一天的星期和当月的总天数
-#     firstDayWeekDay, monthRange = calendar.monthrange(year, month)
-#
-#     # 获取当月的第一天
-#     firstDay = datetime.date(year=year, month=month, day=1)
-#     lastDay = datetime.date(year=year, month=month, day=monthRange)
-#
-#     return firstDay, lastDay
 

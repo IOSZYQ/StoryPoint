@@ -11,57 +11,6 @@ from performance.views import getMonthFirstDay,getMonthLastDay
 class ProjectListView(View):
     def get(self, request):
         all_project = Project.objects.all()
-        group_id = request.GET.get('group', '')
-        group_id = 2
-        group = Group.objects.get(pk=group_id)
-        if group != None:
-            start_time = request.GET.get('start', '')
-            end_time = request.GET.get('end', '')
-            start_time = '2018-1'
-            end_time = '2018-3'
-            if start_time and end_time:
-                start = getMonthFirstDay(start_time)
-                end = getMonthLastDay(end_time)
-                months = (end.month - start.month + 1)+(end.year-start.year)*12
-                all_project = all_project.filter(end_time__range=[start, end])
-            groupInfo = []
-            group_all_sp = 0
-            for project in all_project:
-                if project.executing > 0 and project.acceptance > 0:
-                    weight = project.weight
-                    time = project.getTimeProportion()
-                    executing = project.getAcceptanceBugProportion()
-                    release = project.getReleaseBugProportion()
-                    impression = project.impression
-                    groupResult = []
-                    task = project.project_task.filter(group_id=group_id).last()
-                    if task != None:
-                        group_weight = group.getScore(time=time, acceptance=executing, release=release,
-                                                           impression=impression)
-                        group_sp = task.gsp * group_weight * weight
-                        group_all_sp += group_sp
-                        personInfo = []
-                        for person_task in task.person_task.all():
-                            person_task_sp = person_task.psp * group_weight * weight
-                            tasksp = task.gsp * group_weight * weight
-                            # 项目经理的可获得「项目SP值*5%」的个人SP值
-                            if person_task.user.id == project.manager_id:
-                                person_task_sp += project.getSP() * 0.05
-                            # 小组领导可获得「小组任务SP值*10%」的个人SP值
-                            if person_task.user.id == task.group.id:
-                                person_task_sp += tasksp * 0.1
-                                personInfo.append({"name":person_task.user.name,
-                                                   "psp":person_task_sp})
-                        groupInfo.append({"name":project.name,
-                                          "time": "{0}-{1}".format(project.start_time, project.end_time),
-                                          "sp":group_sp,
-                                          "user":personInfo})
-            score = 100 if group_all_sp/months > 1 else group_all_sp/months*100
-            result = {"score": score,
-                      "sp": group_all_sp,
-                      "group": groupInfo}
-
-        all_project = Project.objects.all()
         start_time = request.GET.get('start', '')
         end_time = request.GET.get('end', '')
         if start_time and end_time :
