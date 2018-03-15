@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/project-detail.css" rel="stylesheet">
+    <script src="../js/main.js"></script>
+    <meta charset="UTF-8">
+    <title>项目详情</title>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header_container">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                侯洋
+                <a>修改密码</a>
+                <a href="login.html">退出登录</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="title"><h1>路书研发部项目管理</h1></div>
+
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="./project.html">项目</a></li>
+        <li role="presentation"><a href="./team.html">团队</a></li>
+        <li role="presentation"><a href="kpi-team.html">绩效管理</a></li>
+    </ul>
+
+    <table class="table table-bordered detailContainer">
+        <tbody>
+        <tr>
+            <td colspan="2"><h4>项目详情</h4></td>
+            <td>
+                <a type="button" data-toggle="modal" data-target=".edit-project-modal">编辑</a>
+                <a href="javascript:deleteProject()">删除项目</a>
+            </td>
+        </tr>
+        <tr>
+            <td>项目名称：需求单项目</td>
+            <td>创建时间：2018.01.01</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>项目经理：leo</td>
+            <td>
+                项目状态：
+                <select class="form-control projectStatus">
+                    <option>执行</option>
+                    <option>验收</option>
+                    <option>发布</option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered detailContainer">
+        <tbody>
+            <tr>
+                <td colspan="3"><h4>部门绩效信息</h4></td>
+            </tr>
+            <tr>
+                <td colspan="2"><h5>产品研发部 项目SP值：1065</h5></td>
+                <td>
+                    <a data-toggle="modal" data-target=".input-department-modal">录入</a>
+                </td>
+            </tr>
+            <tr>
+                <td>绩效权重：1.1</td>
+                <td>项目标准SP：1500</td>
+                <td>项目成效：0.75</td>
+            </tr>
+            <tr>
+                <td>执行时间：45  天</td>
+                <td>验收时间：45  天</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="3"><h5>验收缺陷</h5></td>
+            </tr>
+            <tr>
+                <td>严重缺陷：1  个</td>
+                <td>中级缺陷：2  个</td>
+                <td>低级缺陷：5  个</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h5>发布缺陷</h5></td>
+            </tr>
+            <tr>
+                <td>严重缺陷：1  个</td>
+                <td>中级缺陷：2  个</td>
+                <td>低级缺陷：5  个</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered detailContainer">
+        <tbody>
+            <tr>
+                <td colspan="2"><h4>部门任务</h4></td>
+                <td>
+                    <a data-toggle="modal" data-target=".alloc-task-modal">分配任务</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">产品组 执行 标准GSP: 200</td>
+                <td>
+                    <a data-toggle="modal" data-target=".input-team-modal">录入</a>
+                    <a data-toggle="modal" data-target=".alloc-task-modal">修改</a>
+                    <a href="javascript:deleteAllocTeam()">删除</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">这是任务描述Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridicul</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td>2018.01.01</td>
+            </tr>
+            <tr>
+                <td colspan="2">产品组 验收 标准GSP: 200</td>
+                <td>
+                    <a data-toggle="modal" data-target=".input-team-modal">录入</a>
+                    <a data-toggle="modal" data-target=".alloc-task-modal">修改</a>
+                    <a href="javascript:deleteAllocTeam()">删除</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">这是任务描述Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridicul</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td>2018.01.01</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered detailContainer">
+        <tbody>
+            <tr>
+                <td colspan="3">
+                    <h3>计算过程</h3>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>消耗时间比=0.76</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">消耗时间比=项目标准SP值／(「执行天数+验收天数」*22)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr><tr>
+                <td colspan="3"><h4>验收缺陷比=0.79</h4></td>
+            </tr>
+            <tr>
+                <td colspan="3">验收缺陷比=「项目标准SP值」/(「验收阶段发现的严重缺陷数」*15 + 「中级缺陷数」*5+「低级缺陷」*2)</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <!-- create project -->
+    <div class="modal fade edit-project-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title title" id="createProjectModalLabel">项目详情</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="projectName" class="col-md-3 control-label">项目名称：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectName">
+                            </div>
+                            <label for="projectDateFrom" class="col-md-3 control-label">创建时间：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectDateFrom">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectPm" class="col-md-3 control-label">项目经理：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectPm">
+                            </div>
+                            <label for="projectDateTo" class="col-md-3 control-label">终止时间：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectDateTo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectStatus" class="col-md-3 control-label">项目状态：</label>
+                            <select class="col-md-9 form-control projectStatus" id="projectStatus">
+                                <option>执行</option>
+                                <option>验收</option>
+                                <option>发布</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 录入 -->
+    <div class="modal fade input-department-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="performanceWeight" class="col-md-2 control-label">绩效权重：</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" id="performanceWeight">
+                            </div>
+                            <label for="projectStandardSP" class="col-md-2 control-label"><nobr>项目标准SP：</nobr></label>
+                            <div class="col-sm-2">
+                                <input class="form-control" id="projectStandardSP">
+                            </div>
+                            <label for="ProjectEffectiveness" class="col-md-2 control-label">项目成效：</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" id="ProjectEffectiveness">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ExecutionTime" class="col-md-2 control-label">执行时间：</label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="ExecutionTime">
+                                    <div class="input-group-addon">天</div>
+                                </div>
+                            </div>
+                            <label for="AcceptanceTime" class="col-md-2 control-label">验收时间：</label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="AcceptanceTime">
+                                    <div class="input-group-addon">天</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                验收缺陷
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="SeriousDefect" class="col-md-2 control-label">严重缺陷：</label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="SeriousDefect">
+                                    <div class="input-group-addon">个</div>
+                                </div>
+                            </div>
+                            <label for="IntermediateDeficiency" class="col-md-2 control-label"><nobr>中级缺陷：</nobr></label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="IntermediateDeficiency">
+                                    <div class="input-group-addon">个</div>
+                                </div>
+                            </div>
+                            <label for="LowLevelDefects" class="col-md-2 control-label">低级缺陷：</label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="LowLevelDefects">
+                                    <div class="input-group-addon">个</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                发布缺陷
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="SeriousDefect2" class="col-md-2 control-label">严重缺陷：</label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="SeriousDefect2">
+                                    <div class="input-group-addon">个</div>
+                                </div>
+                            </div>
+                            <label for="IntermediateDeficiency2" class="col-md-2 control-label"><nobr>中级缺陷：</nobr></label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="IntermediateDeficiency2">
+                                    <div class="input-group-addon">个</div>
+                                </div>
+                            </div>
+                            <label for="LowLevelDefects2" class="col-md-2 control-label">低级缺陷：</label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input class="form-control" id="LowLevelDefects2">
+                                    <div class="input-group-addon">个</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- alloc task -->
+    <div class="modal fade alloc-task-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title title" id="createProjectModalLabel1">分配任务</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="projectStatus2" class="col-md-3 control-label">项目状态：</label>
+                            <select class="col-md-3 form-control projectStatus" id="projectStatus2">
+                                <option>执行</option>
+                                <option>验收</option>
+                                <option>发布</option>
+                            </select>
+                            <label for="projectStatus3" class="col-md-3 control-label">分配部门：</label>
+                            <select class="col-md-3 form-control projectStatus" id="projectStatus3">
+                                <option value="全部">全部</option>
+                                <option value="产品研发部">产品研发部</option>
+                                <option value="产品组">产品组</option>
+                                <option value="设计组">设计组</option>
+                                <option value="技术组 前端">技术组 前端</option>
+                                <option value="技术组 后端">技术组 后端</option>
+                                <option value="技术组 移动端">技术组 移动端</option>
+                                <option value="测试组">测试组</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <textarea class="allocTaskComment"></textarea>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- input team -->
+    <div class="modal fade input-team-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title title" id="createProjectModalLabel3">录入信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="projectStandardSP2" class="col-md-3 control-label">项目标准 GSP：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectStandardSP2">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectStandardSP2" class="col-md-3 control-label">项目成员</label>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 全部添加
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 侯洋
+                                    </label>
+                                </div>
+                            </div>
+                            <label for="PSP" class="col-md-3 control-label">PSP：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="PSP">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 蔡晋超
+                                    </label>
+                                </div>
+                            </div>
+                            <label for="PSP" class="col-md-3 control-label">PSP：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="PSP">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<script src="../js/bootstrap-datepicker.js"></script>
+
+</body>
+</html>

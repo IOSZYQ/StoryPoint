@@ -1,0 +1,37 @@
+.header_container {
+    margin: 10px 0 30px 0;
+}
+.title {
+    text-align: center;
+}
+
+thead {
+    background: gray;
+}
+
+.nav.nav-tabs {
+    margin-bottom: 20px;
+}
+
+.dateContainer {
+    margin-bottom: 20px;
+}
+
+.dateContainer .dateSelect {
+    display: inline;
+    width: 100px;
+}
+
+.modal-content {
+    width: 680px;
+    margin: 200px auto;
+}
+
+.modal-content .title {
+    text-align: center;
+}
+
+select {
+    display: inline!important;
+    width: 100px!important;
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/team-detail.css" rel="stylesheet">
+    <script src="../js/main.js"></script>
+    <meta charset="UTF-8">
+    <title>团队详情</title>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header_container">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                侯洋
+                <a>修改密码</a>
+                <a>退出登录</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="title"><h1>路书研发部项目管理</h1></div>
+
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="./project.html">项目</a></li>
+        <li role="presentation" class="active"><a href="./team.html">团队</a></li>
+        <li role="presentation"><a href="kpi-team.html">绩效管理</a></li>
+    </ul>
+
+    <h3>团队详情</h3>
+    <h5>产品组</h5>
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <td>蔡晋超</td>
+                <td>
+                    <span class="job">组长</span>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">编辑</button>
+                    <a type="button" class="btn btn-danger" href="javascript:deletePerson()">删除成员</a>
+                </td>
+            </tr>
+            <tr>
+                <td>侯洋</td>
+                <td>
+                    <span class="job">组员</span>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">编辑</button>
+                    <a type="button" class="btn btn-danger" href="javascript:deletePerson()">删除成员</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- input team -->
+    <div class="modal fade add-person-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="name" class="col-md-3 control-label">小组名称</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="name">
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 设为组长
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-md-3 control-label">邮箱</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>

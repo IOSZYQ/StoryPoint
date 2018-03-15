@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/kpi.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>绩效管理-部门</title>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header_container">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                侯洋
+                <a>修改密码</a>
+                <a>退出登录</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="title"><h1>路书研发部项目管理</h1></div>
+
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="./project.html">项目</a></li>
+        <li role="presentation"><a href="./team.html">团队</a></li>
+        <li role="presentation" class="active"><a href="./kpi-team.html">绩效管理</a></li>
+    </ul>
+
+    <div class="dateContainer">
+        计算周期：
+        <select class="form-control dateSelect">
+            <option>2016</option>
+            <option>2017</option>
+            <option>2018</option>
+            <option>2019</option>
+            <option>2020</option>
+        </select>
+        <select class="form-control dateSelect">
+            <option>1月</option>
+            <option>2月</option>
+            <option>3月</option>
+            <option>4月</option>
+            <option>5月</option>
+            <option>6月</option>
+            <option>7月</option>
+            <option>8月</option>
+            <option>9月</option>
+            <option>10月</option>
+            <option>11月</option>
+            <option>12月</option>
+        </select>
+        ～
+        <select class="form-control dateSelect">
+            <option>2016</option>
+            <option>2017</option>
+            <option>2018</option>
+            <option>2019</option>
+            <option>2020</option>
+        </select>
+        <select class="form-control dateSelect">
+            <option>1月</option>
+            <option>2月</option>
+            <option>3月</option>
+            <option>4月</option>
+            <option>5月</option>
+            <option>6月</option>
+            <option>7月</option>
+            <option>8月</option>
+            <option>9月</option>
+            <option>10月</option>
+            <option>11月</option>
+            <option>12月</option>
+        </select>
+        <button type="button" class="btn btn-primary cal">计算绩效</button>
+    </div>
+
+
+    <ul class="nav nav-pills" role="tablist">
+        <li role="presentation" class="active"><a href="./kpi-team.html">部门绩效</a></li>
+        <li role="presentation"><a href="./kpi-person.html">个人绩效</a></li>
+    </ul>
+
+    <table class="table table-bordered table-hover">
+        <thead >
+            <tr>
+                <th>部门名称</th>
+                <th>绩效评分</th>
+                <th>计算周期</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row"><a href="kpi-detail-department.html">产品研发部</a></th>
+                <td>80</td>
+                <td>2018.01-2018.03</td>
+            </tr>
+            <tr>
+                <th scope="row"><a href="kpi-detail-team.html">产品组</a></th>
+                <td>80</td>
+                <td>2018.01-2018.03</td>
+            </tr>
+            <tr>
+                <th scope="row">设计组</th>
+                <td>80</td>
+                <td>2018.01-2018.03</td>
+            </tr>
+            <tr>
+                <th scope="row">技术组 前端</th>
+                <td>80</td>
+                <td>2018.01-2018.03</td>
+            </tr>
+            <tr>
+                <th scope="row">技术组 后端</th>
+                <td>80</td>
+                <td>2018.01-2018.03</td>
+            </tr>
+            <tr>
+                <th scope="row">技术组 移动端</th>
+                <td>80</td>
+                <td>2018.01-2018.03</td>
+            </tr>
+            <tr>
+                <th scope="row">测试组</th>
+                <td>80</td>
+                <td>2018.01-2018.03</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div> <!-- /container -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>
