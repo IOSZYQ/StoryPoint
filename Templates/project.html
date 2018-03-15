@@ -1,1 +1,162 @@
 {% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="input-group search">
+                <span class="input-group-addon" id="sizing-addon2"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
+                <input type="text" class="form-control" placeholder="请输入项目名称" aria-describedby="sizing-addon2">
+            </div>
+        </div>
+        <div class="col-md-4">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".create-project-modal">新建项目</button>
+            </div>
+        </div>
+
+        <div class="dateContainer">
+            起止时间：
+            <select class="form-control dateSelect">
+                <option>2016</option>
+                <option>2017</option>
+                <option>2018</option>
+                <option>2019</option>
+                <option>2020</option>
+            </select>
+            <select class="form-control dateSelect">
+                <option>1月</option>
+                <option>2月</option>
+                <option>3月</option>
+                <option>4月</option>
+                <option>5月</option>
+                <option>6月</option>
+                <option>7月</option>
+                <option>8月</option>
+                <option>9月</option>
+                <option>10月</option>
+                <option>11月</option>
+                <option>12月</option>
+            </select>
+            ～
+            <select class="form-control dateSelect">
+                <option>2016</option>
+                <option>2017</option>
+                <option>2018</option>
+                <option>2019</option>
+                <option>2020</option>
+            </select>
+            <select class="form-control dateSelect">
+                <option>1月</option>
+                <option>2月</option>
+                <option>3月</option>
+                <option>4月</option>
+                <option>5月</option>
+                <option>6月</option>
+                <option>7月</option>
+                <option>8月</option>
+                <option>9月</option>
+                <option>10月</option>
+                <option>11月</option>
+                <option>12月</option>
+            </select>
+            <span class="pm">项目经理：</span>
+            <select class="form-control dateSelect">
+                <option>全部</option>
+                {% for manager in all_managers %}
+                    <option>{{ manager }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" class="btn btn-primary" href="?start=2018-2-10&end=2018-3-20&manager=''">搜索</button>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead >
+            <tr>
+                <th>项目名称</th>
+                <th>项目经理</th>
+                <th>项目状态</th>
+                <th>起止时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in all_project.object_list %}
+                <tr>
+                <th scope="row"><a href="project-detail.html">{{ project.name }}</a></th>
+                <td>{{ project.manager.username }}</td>
+                <td>{{ project.get_status_display }}</td>
+                <td>{{ project.start_time }} - {{ project.end_time }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if all_project.has_previous %}
+        <a href="?{{ all_project.previous_page_number.querystring }}" class="prev">&lsaquo;&lsaquo; 前一页</a>
+    {% else %}
+        <span class="disabled prev">&lsaquo;&lsaquo; 前一页</span>
+    {% endif %}
+        {% for page in all_project.pages %}
+        {% if page %}
+        {% ifequal page all_project.number %}
+            <span class="current page">{{ page }}</span>
+        {% else %}
+            <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
+        {% endifequal %}
+        {% else %}
+        ...
+        {% endif %}
+    {% endfor %}
+        {% if all_project.has_next %}
+        <a href="?{{ all_project.next_page_number.querystring }}" class="next">下一页 &rsaquo;&rsaquo;</a>
+    {% else %}
+        <span class="disabled next">下一页 &rsaquo;&rsaquo;</span>
+    {% endif %}
+
+    <!-- create project -->
+    <div class="modal fade create-project-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title title" id="createProjectModalLabel">新建项目</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="projectName" class="col-md-3 control-label">项目名称：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectName">
+                            </div>
+                            <label for="projectDate" class="col-md-3 control-label">创建时间：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectDate">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectPm" class="col-md-3 control-label">项目经理：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectPm">
+                            </div>
+                            <label for="projectStatus" class="col-md-3 control-label">项目状态：</label>
+                            <div class="col-sm-3">
+                                <select class="form-control projectStatus" id="projectStatus">
+                                    <option>执行</option>
+                                    <option>验收</option>
+                                    <option>发布</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
