@@ -4,6 +4,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import check_password,make_password
+from django.http import HttpResponse
 
 
 from .forms import *
@@ -85,9 +86,9 @@ class ForgetPwdView(View):
         if forget_form.is_valid():
             email = request.POST.get("email","")
             send_sp_email(email, "forget")
-            return render(request, "send_success.html")
+            return HttpResponse("{'status':'success'}", content_type='application/json')
         else:
-            return render(request, 'forgetpwd.html', {"forget_form":forget_form})
+            return HttpResponse("{'status':'fail'}", content_type='application/json')
 
 class ResetView(View):
     def get(self, request, active_code):
