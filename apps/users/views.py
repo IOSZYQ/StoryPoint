@@ -1,3 +1,4 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.backends import ModelBackend
@@ -82,12 +83,9 @@ class ForgetPwdView(View):
         return render(request, 'forgetpwd.html', {"forget_form":forget_form})
     def post(self, request):
         forget_form = ForgetForm(request.POST)
-        if forget_form.is_valid():
-            email = request.POST.get("email","")
-            send_sp_email(email, "forget")
-            return HttpResponse("{'status':'success'}", content_type='application/json')
-        else:
-            return HttpResponse("{'status':'fail'}", content_type='application/json')
+        email = request.POST.get("email","")
+        send_sp_email(email, "forget")
+        return JsonResponse("{'status':'success'}", content_type='application/json')
 
 class ResetView(View):
     def get(self, request, active_code):
