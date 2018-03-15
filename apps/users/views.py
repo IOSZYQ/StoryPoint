@@ -87,7 +87,7 @@ class ForgetPwdView(View):
         forget_form = ForgetForm(request.POST)
         if forget_form.is_valid():
             email = request.POST.get("email","")
-            user = UserProfile.objects.get(email=email)
+            user = UserProfile.objects.filter(email=email).last()
             if user != None:
                 send_forget_email(email=email)
                 return HttpResponse(dumps("{'status':'0','msg':'新密码已发送至您邮箱,请查收'}"), content_type='application/json')

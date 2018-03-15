@@ -2,6 +2,7 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
 function sameOrigin(url) {
     // test that a given url is a same-origin URL
     // url could be relative or scheme relative or absolute
@@ -15,18 +16,19 @@ function sameOrigin(url) {
         // or any other URL that isn't scheme relative or absolute i.e relative.
         !(/^(\/\/|http:|https:).*/.test(url));
 }
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
-             var cookie = jQuery.trim(cookies[i]);
-             // Does this cookie string begin with the name we want?
-             if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                 break;
-             }
-         }
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
     return cookieValue;
 }
@@ -34,7 +36,7 @@ function getCookie(name) {
 function setCSRFToken() {
     var csrftoken = getCookie('csrftoken');
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
@@ -46,21 +48,24 @@ function forgot() {
 
     setCSRFToken();
 
-    $.post("/forget/",
-        {
+    $.ajax({
+        type: 'POST',
+        url: '/forget/',
+        dataType: 'json',
+        data: {
             email: $("#forgotEmail").val()
         },
-    function(data){
+        success: function (data) {
+            console.log(data.status)
 
-        console.log(data)
-
-        var response = JSON.parse(data);
-        if (response.status == "success") {
-            $('.forgot-password-modal').modal('toggle')
-            $('.forgot-password-finish-modal').modal('show')
-        }
-        else {
-
+            if (data.status == 0) {
+                $('.forgot-password-modal').modal('toggle')
+                $('.forgot-password-finish-modal').modal('show')
+            }
+            else {
+                console.log(data.msg)
+                alert(data.msg)
+            }
         }
     });
 }
