@@ -88,9 +88,9 @@ class ForgetPwdView(View):
             user = UserProfile.objects.get(email=email)
             if user != None:
                 send_forget_email(email=email)
-                return HttpResponse("{'status':'success','msg':'新密码已发送至您邮箱,请查收'}", content_type='application/json')
+                return HttpResponse("{'status':'0','msg':'新密码已发送至您邮箱,请查收'}", content_type='application/json')
             else:
-                return HttpResponse("{'status':'fail', 'msg':'用户不存在,请检查邮箱是否正确'}", content_type='application/json')
+                return HttpResponse("{'status':'-1', 'msg':'用户不存在,请检查邮箱是否正确'}", content_type='application/json')
 
 class ResetView(View):
     def get(self, request, active_code):
