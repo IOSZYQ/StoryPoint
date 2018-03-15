@@ -56,14 +56,11 @@ function forgot() {
             email: $("#forgotEmail").val()
         },
         success: function (data) {
-            console.log(data.status)
-
             if (data.status == 0) {
                 $('.forgot-password-modal').modal('toggle')
                 $('.forgot-password-finish-modal').modal('show')
             }
             else {
-                console.log(data.msg)
                 alert(data.msg)
             }
         }
@@ -71,7 +68,29 @@ function forgot() {
 }
 
 function modifyPassword() {
-    $('.forgot-modify-password-modal').modal('toggle')
+
+    setCSRFToken();
+
+    $.ajax({
+        type: 'POST',
+        url: '/modify_pwd/',
+        dataType: 'json',
+        data: {
+            oldpassword: $("#oldpassword").val(),
+            password1: $("#password1").val(),
+            password2: $("#password2").val(),
+        },
+        success: function (data) {
+            if (data.status == 0) {
+                $('.forgot-modify-password-modal').modal('toggle')
+            }
+            else {
+                alert(data.msg)
+            }
+        }
+    });
+
+
 }
 
 function deleteProject() {
