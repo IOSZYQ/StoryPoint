@@ -96,9 +96,9 @@ function editeProject(id) {
 
     $.ajax({
         type: 'POST',
-        url: '/project/edit/' + id,
+        url: '/project/edit/',
         dataType: 'json',
-        data:$('#form-horizontal').serialize(),
+        data:{a:"1"},
         success:function (data) {
             if (data.status == 0) {
                 $('#form-horizontal').modal('toggle')

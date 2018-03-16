@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^$', ProjectListView.as_view(), name="project_list"),
     url(r'^detail/(?P<project_id>\d+)/$', ProjectDetailView.as_view(), name="project_detail"),
     url(r'^add/$', CreateEditProjectInfoView.as_view, name="add_project"),
-    url(r'^edit/$', CreateEditProjectInfoView.as_view, name="edit_project"),
+    url(r'^edit/$', CreateEditProjectInfoView.as_view(), name="edit_project"),
     url(r'^edit_detail/$', EditorProjectDetailView.as_view, name="edit_project_detail"),
     url(r'^delete/$', deleteProjectView.as_view, name="delete_project"),
 
