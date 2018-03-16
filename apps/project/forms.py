@@ -5,10 +5,16 @@ __date__ = '2018/3/12 下午8:28'
 from django import forms
 from project.models import *
 
-class ProjectForm(forms.ModelForm):
+class CreateEditProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['manager', 'name', 'sp', 'weight', 'impression', 'acceptance_serious_bug', 'acceptance_medium_bug', 'acceptance_slight_bug', 'release_serious_bug', 'release_medium_bug', 'release_slight_bug', 'status']
+        fields = ['name']
+
+
+class ProjectInfoForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['sp', 'weight', 'impression', 'acceptance_serious_bug', 'acceptance_medium_bug', 'acceptance_slight_bug', 'release_serious_bug', 'release_medium_bug', 'release_slight_bug']
 
         def clean_weight(self):
             weight = self.cleaned_data['weight']

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import View
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+from json import dumps
 
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
@@ -27,7 +28,6 @@ class ProjectListView(View):
             page = 1
         p = Paginator(all_project, 10, request=request)
         page_project = p.page(page)
-
         all_manager_names = set(Project.objects.values_list('manager__username', flat=True))
         return render(request, 'project.html', {
             "all_project":page_project,
@@ -61,29 +61,33 @@ class CreateEditProjectInfoView(View):
     管理员用户添加或者编辑项目信息
     """
     def post(self, request):
-        project_form = ProjectForm(request.POST)
+        project_form = CreateEditProjectForm(request.POST)
         if project_form.is_valid():
             name = request.POST.get("name", "")
-            start_time = request.POST.get("name", "")
-            manager = request.POST.get("name", "")
-            status = request.POST.get("name", "")
-
-            project_id = request.POST.get("name", "")
+            start_time = request.POST.get("start_time", "")
+            end_time = request.POST.get("end_time", "")
+            manager = request.POST.get("manager", "")
+            status = request.POST.get("status", "")
+            project_id = request.POST.get("project_id", "")
             project = Project.objects.get(pk=project_id)
             if project == None:
                 project = Project()
+            status = project.getStatusName(str=status)
             project.name = name
-            project.start_time = start_time
-            project.manager = manager
+            project.start_time = start_time.replace('年','-').replace('月','-').replace('日','')
+            project.end_time = end_time.replace('年','-').replace('月','-').replace('日','')
+            project.manager = UserProfile.objects.get(pk=manager)
             project.status = status
             project.save()
-            return HttpResponse("{'status':'success'}", content_type='application/json')
+            result = {"status":'0'}
+            return HttpResponse(dumps(result), content_type='application/json')
         else:
-            return HttpResponse("{'status':'fail', 'msg':{0}}".format(project_form.errors), content_type='application/json')
+            result = {"status":'-1'}
+            return HttpResponse(dumps(result).format(project_form.errors), content_type='application/json')
 
 class EditorProjectDetailView(View):
     def post(self, request):
-        project_form = ProjectForm(request.POST)
+        project_form = ProjectInfoForm(request.POST)
         if project_form.is_valid():
             project_id = request.POST.get("project_id", "")
             project = Project.objects.get(pk=project_id)
@@ -113,9 +117,11 @@ class EditorProjectDetailView(View):
             project.release_medium_bug = release_medium_bug
             project.release_slight_bug = release_slight_bug
             project.save()
-            return HttpResponse("{'status':'success'}", content_type='application/json')
+            result = {"status":'0'}
+            return HttpResponse(dumps(result), content_type='application/json')
         else:
-            return HttpResponse("{'status':'fail', 'msg':{0}}".format(project_form.errors),content_type='application/json')
+            result = {"status":'-1',"msg":'信息格式不正确'}
+            return HttpResponse(dumps(result).format(project_form.errors),content_type='application/json')
 
 class deleteProjectView(View):
     def post(self, request):
@@ -132,11 +138,12 @@ class ProjectDetailView(View):
             info = []
             info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
             info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
-
+            users = UserProfile.objects.order_by('-id')
             if project:
                 return render(request, 'project-detail.html', {
                     "project":project,
-                    'tasks':tasks
+                    'tasks':tasks,
+                    "users":users
                 })
 
 class CreateEditTaskInfoView(View):

@@ -34,6 +34,15 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def getStatusName(self, str='执行'):
+        if str == '执行':
+            return 'executing'
+        if str == '验收':
+            return 'acceptance'
+        if str == '发布':
+            return 'release'
+        return 'executing'
+
     def getTimeProportion(self):
         if self.executing > 0 and self.acceptance > 0:
             time = self.sp/22.0/(self.executing+self.acceptance)
@@ -60,7 +69,6 @@ class Project(models.Model):
 
     def getSP(self):
         return self.sp*self.weight*self.getScore()
-
 
 
 class Task(models.Model):

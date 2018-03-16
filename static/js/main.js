@@ -94,17 +94,55 @@ function modifyPassword() {
 function editeProject(id) {
     setCSRFToken()
 
-    alert("111")
+    $.ajax({
+        type: 'POST',
+        url: '/project/edit/',
+        dataType: 'json',
+        data:{
+            name:$("#projectName").val(),
+            manager:$("#projectPm").val(),
+            start_time:$("#projectDateFrom").val(),
+            end_time:$("#projectDateTo").val(),
+            status:$("#projectStatus").val(),
+            project_id:$("#project_id").val(),
+        },
+        success:function (data) {
+            if (data.status == 0) {
+                $('.edit-project-modal').modal('toggle')
+            }
+            else {
+                alert(data.msg)
+            }
+        }
+    })
+}
+
+function editeProjectInfo() {
+    setCSRFToken()
 
     $.ajax({
         type: 'POST',
-        url: '/project/edit/' + id,
+        url: '/project/edit_detail/',
         dataType: 'json',
-        data:$('#form-horizontal').serialize(),
+        data:{
+            project_id:$("#project_id").val(),
+            weight:$("#performanceWeight").val(),
+            sp:$("#projectStandardSP").val(),
+            impression:$("#ProjectEffectiveness").val(),
+            executing:$("#ExecutionTime").val(),
+            acceptance:$("#AcceptanceTime").val(),
+            acceptance_serious_bug:$("#SeriousDefect").val(),
+            acceptance_medium_bug:$("#IntermediateDeficiency").val(),
+            acceptance_slight_bug:$("#LowLevelDefects").val(),
+            release_serious_bug:$("#SeriousDefect2").val(),
+            release_medium_bug:$("#IntermediateDeficiency2").val(),
+            release_slight_bug:$("#LowLevelDefects2").val(),
+        },
         success:function (data) {
             if (data.status == 0) {
-                $('#form-horizontal').modal('toggle')
-            }else {
+                $('.input-department-modal').modal('toggle')
+            }
+            else {
                 alert(data.msg)
             }
         }

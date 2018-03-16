@@ -163,29 +163,37 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
+                        <input hidden id="project_id" value="{{ project.id }}">
                         <div class="form-group">
-                            <label for="projectName" class="col-md-3 control-label">项目名称：</label>
+                            <label for="projectName" class="col-md-3 control-label" name="name">项目名称：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" id="projectName" value="{{ project.name }}">
                             </div>
-                            <label for="projectDateFrom" class="col-md-3 control-label">创建时间：</label>
+
+                            <label for="projectStatus" class="col-md-3 control-label">项目经理：</label>
+                            <select class="col-md-9 form-control projectStatus" id="projectPm" name="status">
+                                {% for user in users %}
+                                    {% if user.id == project.manager.id %}
+                                       <option value="{{ user.id }}" selected>{{ user.username }}</option>
+                                    {% else %}
+                                       <option value="{{ user.id }}">{{ user.username }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectDateFrom" class="col-md-3 control-label" name="start_time">创建时间：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" id="projectDateFrom" value="{{ project.start_time }}">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="projectPm" class="col-md-3 control-label">项目经理：</label>
-                            <div class="col-sm-3">
-                                <input class="form-control" id="projectPm" value="{{ project.manager.username }}">
-                            </div>
-                            <label for="projectDateTo" class="col-md-3 control-label">终止时间：</label>
+                            <label for="projectDateTo" class="col-md-3 control-label" name="end_time">终止时间：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" id="projectDateTo" value="{{ project.end_time }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="projectStatus" class="col-md-3 control-label">项目状态：</label>
-                            <select class="col-md-9 form-control projectStatus" id="projectStatus">
+                            <select class="col-md-9 form-control projectStatus" id="projectStatus" name="status">
                                 <option>执行</option>
                                 <option>验收</option>
                                 <option>发布</option>
@@ -215,32 +223,33 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
+                        <input hidden id="project_id" value="{{ project.id }}">
                         <div class="form-group">
                             <label for="performanceWeight" class="col-md-2 control-label">绩效权重：</label>
                             <div class="col-sm-2">
-                                <input class="form-control" id="performanceWeight">
+                                <input class="form-control" id="performanceWeight" value="{{ project.weight }}">
                             </div>
                             <label for="projectStandardSP" class="col-md-2 control-label"><nobr>项目标准SP：</nobr></label>
                             <div class="col-sm-2">
-                                <input class="form-control" id="projectStandardSP">
+                                <input class="form-control" id="projectStandardSP" value="{{ project.sp }}">
                             </div>
                             <label for="ProjectEffectiveness" class="col-md-2 control-label">项目成效：</label>
                             <div class="col-sm-2">
-                                <input class="form-control" id="ProjectEffectiveness">
+                                <input class="form-control" id="ProjectEffectiveness" value="{{ project.impression }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="ExecutionTime" class="col-md-2 control-label">执行时间：</label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="ExecutionTime">
+                                    <input class="form-control" id="ExecutionTime" value="{{ project.executing }}">
                                     <div class="input-group-addon">天</div>
                                 </div>
                             </div>
                             <label for="AcceptanceTime" class="col-md-2 control-label">验收时间：</label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="AcceptanceTime">
+                                    <input class="form-control" id="AcceptanceTime" value="{{ project.acceptance }}">
                                     <div class="input-group-addon">天</div>
                                 </div>
                             </div>
@@ -255,21 +264,21 @@
                             <label for="SeriousDefect" class="col-md-2 control-label">严重缺陷：</label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="SeriousDefect">
+                                    <input class="form-control" id="SeriousDefect" value="{{ project.acceptance_serious_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
                             <label for="IntermediateDeficiency" class="col-md-2 control-label"><nobr>中级缺陷：</nobr></label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="IntermediateDeficiency">
+                                    <input class="form-control" id="IntermediateDeficiency" value="{{ project.acceptance_medium_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
                             <label for="LowLevelDefects" class="col-md-2 control-label">低级缺陷：</label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="LowLevelDefects">
+                                    <input class="form-control" id="LowLevelDefects" value="{{ project.acceptance_slight_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -284,21 +293,21 @@
                             <label for="SeriousDefect2" class="col-md-2 control-label">严重缺陷：</label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="SeriousDefect2">
+                                    <input class="form-control" id="SeriousDefect2" value="{{ project.release_serious_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
                             <label for="IntermediateDeficiency2" class="col-md-2 control-label"><nobr>中级缺陷：</nobr></label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="IntermediateDeficiency2">
+                                    <input class="form-control" id="IntermediateDeficiency2" value="{{ project.release_medium_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
                             <label for="LowLevelDefects2" class="col-md-2 control-label">低级缺陷：</label>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <input class="form-control" id="LowLevelDefects2">
+                                    <input class="form-control" id="LowLevelDefects2" value="{{ project.release_slight_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -306,7 +315,7 @@
 
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProjectInfo()">确定</a>
                             </div>
                             <div class="col-sm-6">
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
