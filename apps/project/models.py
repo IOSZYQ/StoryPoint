@@ -11,7 +11,7 @@ import users
 class Project(models.Model):
     name = models.CharField(max_length=100, verbose_name="项目名称")
     manager = models.ForeignKey(UserProfile, verbose_name="项目经理", related_name="manager_projects")
-    create_time = models.DateField(auto_now_add=True, verbose_name="项目创建时间")
+    create = models.DateField(auto_now_add=True, verbose_name="项目创建时间")
     start_time = models.DateField(verbose_name="项目开始时间", null=True, blank=True)
     end_time = models.DateField(verbose_name="项目终止时间",null=True, blank=True)
     executing = models.IntegerField(default=0, verbose_name="项目执行时间")
@@ -38,25 +38,25 @@ class Project(models.Model):
         if self.executing > 0 and self.acceptance > 0:
             time = self.sp/22.0/(self.executing+self.acceptance)
             if time > 0 and time < 1:
-                return time
+                return round(time,2)
         return 1
 
     def getAcceptanceBugProportion(self):
         if self.acceptance_serious_bug > 0 or self.acceptance_slight_bug > 0 or self.acceptance_slight_bug > 0:
             acceptance = self.sp*1.0/(15*self.acceptance_serious_bug + 5*self.acceptance_medium_bug + 2*self.acceptance_slight_bug)
             if acceptance > 0 and acceptance < 1:
-                return acceptance
+                return round(acceptance,2)
         return 1
 
     def getReleaseBugProportion(self):
         if self.release_serious_bug > 0 or self.release_medium_bug > 0 or self.release_slight_bug > 0:
             release =self.sp*1.0/(1500*self.release_serious_bug + 500*self.release_medium_bug + 200*self.release_slight_bug)
             if release > 0 and release < 1:
-                return release
+                return round(release,2)
         return 1
 
     def getScore(self):
-        return self.getTimeProportion()*0.4 + self.getReleaseBugProportion()*0.3 + self.impression*0.3
+        return round(self.getTimeProportion()*0.4 + self.getReleaseBugProportion()*0.3 + self.impression*0.3, 3)
 
     def getSP(self):
         return self.sp*self.weight*self.getScore()
@@ -71,6 +71,7 @@ class Task(models.Model):
     status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布")),default="executing",max_length=15)
     description = models.CharField(max_length=1000, null=True, blank=True)
     gsp = models.IntegerField(verbose_name="小组SP值", default=0)
+    create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
 
     class Meta:
         verbose_name = "小组任务"
@@ -79,14 +80,39 @@ class Task(models.Model):
     def __str__(self):
         return self.description
 
+    def getScore(self):
+        return round(self.project.getTimeProportion()*self.group.timeProportion +
+                     self.project.getAcceptanceBugProportion()*self.group.acceptanceBugProportion +
+                     self.project.getReleaseBugProportion()*self.group.releaseBugProportion +
+                     self.project.impression*self.group.impressionProportion, 2)
+
+    def getSP(self):
+        return round(self.gsp*self.project.weight*self.getScore(),1)
+
+    def scoreDescription(self):
+        return "{0}项目评分=消耗时间比({1})*{2}% + 发布缺陷比({3})*{4}% + 项目成效({5})*{6}%".format(self.group.name,self.project.getTimeProportion(),int(self.group.timeProportion*100), self.project.getReleaseBugProportion(), int(self.group.releaseBugProportion*100),self.project.impression, int(self.group.impressionProportion*100))
+
+    def spDescription(self):
+        return  "{0}项目SP值=小组标准GSP值({1})*权重({2})*{3}项目评分({4})".format(self.group.name,self.gsp, self.project.weight,self.group.name, self.getScore())
+
 class PersonTask(models.Model):
     user = models.ForeignKey(UserProfile, verbose_name="任务完成人", null=True, blank=True, related_name="task_user")
     psp = models.IntegerField(verbose_name="个人sp值", default=0)
     task = models.ForeignKey(Task, verbose_name="小组任务", null=True, blank=True, related_name="person_task")
+    create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
     class Meta:
         verbose_name = "个人任务"
         verbose_name_plural = verbose_name
 
     def __str__(self):
         return self.user.username
+
+    def getScore(self):
+        return round(self.task.project.getTimeProportion()*self.task.group.timeProportion +
+                     self.task.project.getAcceptanceBugProportion()*self.task.group.acceptanceBugProportion +
+                     self.task.project.getReleaseBugProportion()*self.task.group.releaseBugProportion +
+                     self.task.project.impression*self.task.group.impressionProportion, 3)
+
+    def getSP(self):
+        return self.psp*self.project.weight*self.getScore()
 

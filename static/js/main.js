@@ -89,8 +89,26 @@ function modifyPassword() {
             }
         }
     });
+}
 
+function editeProject(id) {
+    setCSRFToken()
 
+    alert("111")
+
+    $.ajax({
+        type: 'POST',
+        url: '/project/edit/' + id,
+        dataType: 'json',
+        data:$('#form-horizontal').serialize(),
+        success:function (data) {
+            if (data.status == 0) {
+                $('#form-horizontal').modal('toggle')
+            }else {
+                alert(data.msg)
+            }
+        }
+    })
 }
 
 function deleteProject() {

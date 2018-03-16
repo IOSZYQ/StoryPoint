@@ -13,17 +13,28 @@
     <body>
 
         <div class="container">
-
-            <div class="header_container">
+            {% if request.user.is_authenticated %}
+                <div class="header_container">
                 <div class="row">
                     <div class="col-md-8"></div>
                     <div class="col-md-4">
-                        侯洋
+                        {{ user.username }}
                         <a type="button" data-toggle="modal" data-target=".forgot-modify-password-modal">修改密码</a>
-                        <a href="login.html">退出登录</a>
+                        <a href="{% url 'login' %}">退出登录</a>
                     </div>
                 </div>
             </div>
+            {% endif %}
+{#            <div class="header_container">#}
+{#                <div class="row">#}
+{#                    <div class="col-md-8"></div>#}
+{#                    <div class="col-md-4">#}
+{#                        侯洋#}
+{#                        <a type="button" data-toggle="modal" data-target=".forgot-modify-password-modal">修改密码</a>#}
+{#                        <a href="{% url 'login' %}">退出登录</a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
 
             <div class="title"><h1>路书研发部项目管理</h1></div>
 

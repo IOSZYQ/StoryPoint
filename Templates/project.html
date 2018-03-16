@@ -11,17 +11,17 @@
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".create-project-modal">新建项目</button>
                 </div>
             </div>
-
+            <form class="form-signin" action="" method="post">
             <div class="dateContainer">
                 起止时间：
-                <select class="form-control dateSelect">
+                <select class="form-control dateSelect" name="startyear">
                     <option>2016</option>
                     <option>2017</option>
                     <option>2018</option>
                     <option>2019</option>
                     <option>2020</option>
                 </select>
-                <select class="form-control dateSelect">
+                <select class="form-control dateSelect" name="startmonth">
                     <option>1月</option>
                     <option>2月</option>
                     <option>3月</option>
@@ -36,14 +36,14 @@
                     <option>12月</option>
                 </select>
                 ～
-                <select class="form-control dateSelect">
+                <select class="form-control dateSelect" name="endyear">
                     <option>2016</option>
                     <option>2017</option>
                     <option>2018</option>
                     <option>2019</option>
                     <option>2020</option>
                 </select>
-                <select class="form-control dateSelect">
+                <select class="form-control dateSelect" name="endmonth">
                     <option>1月</option>
                     <option>2月</option>
                     <option>3月</option>
@@ -58,14 +58,19 @@
                     <option>12月</option>
                 </select>
                 <span class="pm">项目经理：</span>
-                <select class="form-control dateSelect">
+                <select class="form-control dateSelect" name="manager">
                     <option>全部</option>
                     {% for manager in all_managers %}
                         <option>{{ manager }}</option>
                     {% endfor %}
                 </select>
-                <button type="button" class="btn btn-primary" href="?start=2018-2-10&end=2018-3-20&manager=''">搜索</button>
+                <input class="btn btn-primary" type="submit" value="搜索"></input>
+{#                <button type="button" class="btn btn-primary" href="?start=2018-2-10&end=2018-3-20&manager=''">搜索</button>#}
             </div>
+            {% csrf_token %}
+            </form>
+
+
 
             <table class="table table-bordered table-hover">
                 <thead >
@@ -79,7 +84,7 @@
                 <tbody>
                 {% for project in all_project.object_list %}
                     <tr>
-                    <th scope="row"><a href="project-detail.html">{{ project.name }}</a></th>
+                    <th scope="row"><a href="{% url 'project:project_detail' project.id %}">{{ project.name }}</a></th>
                     <td>{{ project.manager.username }}</td>
                     <td>{{ project.get_status_display }}</td>
                     <td>{{ project.start_time }} - {{ project.end_time }}</td>

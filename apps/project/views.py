@@ -33,6 +33,28 @@ class ProjectListView(View):
             "all_project":page_project,
             "all_managers":all_manager_names,
         })
+    def post(self,request):
+        manager_name = request.POST.get('manager','')
+        start = getMonthFirstDay(year=request.POST.get('startyear',''), month=request.POST.get('startmonth',''))
+        end = getMonthLastDay(year=request.POST.get('endyear',''), month=request.POST.get('endmonth',''))
+        all_project = Project.objects.filter(end_time__range=[start, end])
+        if manager_name != '全部':
+            all_project = all_project.filter(manager__username=manager_name)
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        p = Paginator(all_project, 10, request=request)
+        page_project = p.page(page)
+
+        all_manager_names = set(Project.objects.values_list('manager__username', flat=True))
+        return render(request, 'project.html', {
+            "all_project": page_project,
+            "all_managers": all_manager_names,
+            "start_time": start,
+            "end_time": end,
+            "manager": manager_name
+        })
 
 class CreateEditProjectInfoView(View):
     """
@@ -106,10 +128,15 @@ class deleteProjectView(View):
 class ProjectDetailView(View):
     def get(self, request, project_id):
             project = Project.objects.get(id=project_id)
+            tasks = Task.objects.filter(project__id = project.id)
+            info = []
+            info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
+            info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
 
             if project:
-                return render(request, 'detail.html', {
-                    "project":project
+                return render(request, 'project-detail.html', {
+                    "project":project,
+                    'tasks':tasks
                 })
 
 class CreateEditTaskInfoView(View):

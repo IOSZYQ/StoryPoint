@@ -247,27 +247,39 @@ class UserPerformanceView(View):
 
         return render(request, 'performance.html', {})
 
-def getMonthFirstDay(year_month=None):
-    if year_month:
-        year_month = year_month.split('-')
-        if len(year_month) == 2:
-            year = int(year_month[0])
-            month = int(year_month[1])
-            if year and month and month>0 and month<13:
-                return date(year=year,month=month, day=1)
-    return date(year=2017,month=12,day=31)
+# def getMonthFirstDay(year_month=None):
+#     if year_month:
+#         year_month = year_month.split('-')
+#         if len(year_month) == 2:
+#             year = int(year_month[0])
+#             month = int(year_month[1])
+#             if year and month and month>0 and month<13:
+#                 return date(year=year,month=month, day=1)
+#     return date(year=2017,month=12,day=31)
+#
+# def getMonthLastDay(year_month=None):
+#     if year_month:
+#         year_month = year_month.split('-')
+#         if len(year_month) == 2:
+#             year = int(year_month[0])
+#             month = int(year_month[1])
+#             if year and month and month>0 and month<13:
+#                 if month == 12:
+#                     lastDay = date(year=year+1,month=1, day=1) - timedelta(days=1)
+#                 else:
+#                     lastDay = date(year=year,month=month+1, day=1) - timedelta(days=1)
+#                 return lastDay
+#     return datetime.date(year=2050,month=1,day=1)
 
-def getMonthLastDay(year_month=None):
-    if year_month:
-        year_month = year_month.split('-')
-        if len(year_month) == 2:
-            year = int(year_month[0])
-            month = int(year_month[1])
-            if year and month and month>0 and month<13:
-                if month == 12:
-                    lastDay = date(year=year+1,month=1, day=1) - timedelta(days=1)
-                else:
-                    lastDay = date(year=year,month=month+1, day=1) - timedelta(days=1)
-                return lastDay
-    return datetime.date(year=2050,month=1,day=1)
+def getMonthFirstDay(year='2018', month='1月'):
+    month = month.replace('月', '')
+    return date(year=int(year),month=int(month),day=31)
 
+def getMonthLastDay(year='2018', month='3月'):
+    month = month.replace('月', '')
+    year = int(year)
+    month = int(month)
+    if month == 12:
+        return date(year=year + 1, month=1, day=1) - timedelta(days=1)
+    else:
+        return date(year=year, month=month + 1, day=1) - timedelta(days=1)
