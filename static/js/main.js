@@ -94,8 +94,6 @@ function modifyPassword() {
 function editeProject(id) {
     setCSRFToken()
 
-    alert("111")
-
     $.ajax({
         type: 'POST',
         url: '/project/edit/' + id,
