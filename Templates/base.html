@@ -107,14 +107,14 @@
         <script>
             new Pikaday(
             {
-                field: document.getElementById('datepickerFrom'),
+                field: document.getElementById('projectDateFrom'),
                 onSelect: function() {
                     document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
                 }
             });
             new Pikaday(
             {
-                field: document.getElementById('datepickerTo'),
+                field: document.getElementById('projectDateTo'),
                 onSelect: function() {
                     document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
                 }
