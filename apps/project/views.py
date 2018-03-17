@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.base import View
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from json import dumps
 
@@ -79,7 +79,9 @@ class CreateEditProjectInfoView(View):
             project.manager = UserProfile.objects.get(pk=manager)
             project.status = status
             project.save()
-            result = {"status":'0'}
+            # return HttpResponseRedirect("www.baidu.com")
+            # return HttpResponseRedirect('/project/detail/{0}/'.format(project_id))
+            result = {"status":0, 'msg':"成功了"}
             return HttpResponse(dumps(result), content_type='application/json')
         else:
             result = {"status":'-1'}
@@ -138,32 +140,37 @@ class ProjectDetailView(View):
             info = []
             info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
             info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
-            users = UserProfile.objects.order_by('-id')
+            users = UserProfile.objects.order_by('id')
+            groups = Group.objects.order_by('id')
             if project:
                 return render(request, 'project-detail.html', {
                     "project":project,
                     'tasks':tasks,
-                    "users":users
+                    "users":users,
+                    'groups':groups
                 })
 
 class CreateEditTaskInfoView(View):
     def post(self,request):
         task_form = TaskForm(request.POST)
         if task_form.is_valid():
+            projectId = request.POST.get("projectId","")
             status = request.POST.get("status", "")
             group = request.POST.get("group", "")
             description = request.POST.get("description", "")
             task_id = request.POST.get("task_id", "")
-            task = Task.objects.get(pk=task_id)
-            if task == None:
-                task = Task()
+            if task_id != "":
+                task = Task.objects.get(pk=task_id)
+            if task_id == "" or task== None:
+                task = Task.objects.create(project_id=projectId,group_id=group)
             task.status = status
-            task.group = group
             task.description = description
             task.save()
-            return HttpResponse("{'status':'success'}", content_type='application/json')
+            result = {'status':0}
+            return HttpResponse(dumps(result), content_type='application/json')
         else:
-            return HttpResponse("{'status':'fail', 'msg':{0}}".format(task_form.errors),
+            result = {'status':-1, 'msg':"{0}".format(task_form.errors)}
+            return HttpResponse(dumps(result),
                                 content_type='application/json')
 
 

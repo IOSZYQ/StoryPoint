@@ -7,10 +7,10 @@ from django.conf.urls import url, include
 from .views import *
 
 taskUrlPatterns = [
-    url(r'^task/add/$', CreateEditTaskInfoView.as_view(), name="add_task"),
-    url(r'^task/edit/$', CreateEditTaskInfoView.as_view(), name="edit_task"),
-    url(r'^task/edit_detail/$', EditTaskDetailView.as_view(), name="edit_task_detail"),
-    url(r'^task/delete/$', deleteTaskView.as_view(), name="delete_task"),
+    url(r'^add/$', CreateEditTaskInfoView.as_view(), name="add_task"),
+    url(r'^edit/$', CreateEditTaskInfoView.as_view(), name="edit_task"),
+    url(r'^edit_detail/$', EditTaskDetailView.as_view(), name="edit_task_detail"),
+    url(r'^delete/$', deleteTaskView.as_view(), name="delete_task"),
 ]
 
 urlpatterns = [

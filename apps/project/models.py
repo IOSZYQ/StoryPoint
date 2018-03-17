@@ -80,6 +80,7 @@ class Task(models.Model):
     description = models.CharField(max_length=1000, null=True, blank=True)
     gsp = models.IntegerField(verbose_name="小组SP值", default=0)
     create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布")),default="executing",max_length=15)
 
     class Meta:
         verbose_name = "小组任务"
@@ -108,6 +109,8 @@ class PersonTask(models.Model):
     psp = models.IntegerField(verbose_name="个人sp值", default=0)
     task = models.ForeignKey(Task, verbose_name="小组任务", null=True, blank=True, related_name="person_task")
     create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布")),default="executing",max_length=15)
+
     class Meta:
         verbose_name = "个人任务"
         verbose_name_plural = verbose_name
@@ -122,5 +125,10 @@ class PersonTask(models.Model):
                      self.task.project.impression*self.task.group.impressionProportion, 3)
 
     def getSP(self):
-        return self.psp*self.project.weight*self.getScore()
+        sp = self.psp*self.task.project.weight*self.getScore()
+        if self.user.id == self.task.group.leader.id :
+            sp += self.task.getSP()*0.1
+        if self.user.id == self.task.project.manager.id:
+            sp += self.task.project.getSP()*0.05
+        return round(sp,1)
 

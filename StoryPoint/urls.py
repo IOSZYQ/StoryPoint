@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^project/', include('project.urls', namespace="project")),
 
     #团队相关url配置
-    url(r'^group/', include('users.urls', namespace="group")),
+    url(r'^group/', include('group.urls', namespace="group")),
 
     # #绩效相关url配置
     url(r'^performance/', include('performance.urls', namespace="performance")),

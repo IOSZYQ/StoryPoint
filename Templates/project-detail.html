@@ -163,7 +163,7 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
-                        <input hidden id="project_id" value="{{ project.id }}">
+                        <input hidden class="edit_project_id" value="{{ project.id }}">
                         <div class="form-group">
                             <label for="projectName" class="col-md-3 control-label" name="name">项目名称：</label>
                             <div class="col-sm-3">
@@ -180,6 +180,7 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
+
                         </div>
                         <div class="form-group">
                             <label for="projectDateFrom" class="col-md-3 control-label" name="start_time">创建时间：</label>
@@ -188,23 +189,23 @@
                             </div>
                             <label for="projectDateTo" class="col-md-3 control-label" name="end_time">终止时间：</label>
                             <div class="col-sm-3">
-                                <input class="form-control" id="projectDateTo" value="{{ project.end_time }}">
+                                <input class="form-control" type="text" id="projectDateTo" value="{{ project.end_time }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="projectStatus" class="col-md-3 control-label">项目状态：</label>
                             <select class="col-md-9 form-control projectStatus" id="projectStatus" name="status">
-                                <option>执行</option>
-                                <option>验收</option>
-                                <option>发布</option>
+                                <option value="executing">执行</option>
+                                <option value="acceptance">验收</option>
+                                <option value="release">发布</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProject({{ project.id }})">确定</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProject()">确定</a>
                             </div>
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
                             </div>
                         </div>
                         {% csrf_token %}
@@ -212,6 +213,55 @@
                 </div>
             </div>
         </div>
+
+        <script>
+                var i18nObject = {
+                        previousMonth : "上个月",
+                        nextMonth     : "下个月",
+                        months        : ["一月",
+                                        "二月",
+                                        "三月",
+                                        "四月",
+                                        "五月",
+                                        "六月",
+                                        "七月",
+                                        "八月",
+                                        "九月",
+                                        "十月",
+                                        "十一月",
+                                        "十二月"],
+                        weekdays      : ["周日",
+                                        "周一",
+                                        "周二",
+                                        "周三",
+                                        "周四",
+                                        "周五",
+                                        "周六"],
+                        weekdaysShort : ["日",
+                                        "一",
+                                        "二",
+                                        "三",
+                                        "四",
+                                        "五",
+                                        "六"]
+                    };
+                new Pikaday(
+                {
+                    field: document.getElementById('projectDateFrom'),
+                    i18n: i18nObject,
+                    onSelect: function() {
+                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                    }
+                });
+                new Pikaday(
+                {
+                    field: document.getElementById('projectDateTo'),
+                    i18n: i18nObject,
+                    onSelect: function() {
+                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                    }
+                });
+            </script>
     </div>
 
     <!-- 录入 -->
@@ -318,7 +368,7 @@
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProjectInfo()">确定</a>
                             </div>
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
                             </div>
                         </div>
                     </form>
@@ -339,36 +389,31 @@
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label for="projectStatus2" class="col-md-3 control-label">项目状态：</label>
-                            <select class="col-md-3 form-control projectStatus" id="projectStatus2">
-                                <option>执行</option>
-                                <option>验收</option>
-                                <option>发布</option>
+                            <select class="col-md-3 form-control projectStatus" id="taskStatus">
+                                <option value="executing">执行</option>
+                                <option value="acceptance">验收</option>
+                                <option value="release">发布</option>
                             </select>
                             <label for="projectStatus3" class="col-md-3 control-label">分配部门：</label>
-                            <select class="col-md-3 form-control projectStatus" id="projectStatus3">
-                                <option value="全部">全部</option>
-                                <option value="产品研发部">产品研发部</option>
-                                <option value="产品组">产品组</option>
-                                <option value="设计组">设计组</option>
-                                <option value="技术组 前端">技术组 前端</option>
-                                <option value="技术组 后端">技术组 后端</option>
-                                <option value="技术组 移动端">技术组 移动端</option>
-                                <option value="测试组">测试组</option>
+                            <select class="col-md-3 form-control projectStatus" id="taskGroup">
+                                {% for group in groups %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
                             <div class="col-md-1"></div>
                             <div class="col-md-10">
-                                <textarea class="allocTaskComment"></textarea>
+                                <textarea class="allocTaskComment" id="taskDescription"></textarea>
                             </div>
                             <div class="col-md-1"></div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:addTask({{ project.id }})">确定</a>
                             </div>
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
                             </div>
                         </div>
                     </form>
@@ -417,7 +462,7 @@
                             </div>
                             <label for="PSP" class="col-md-3 control-label">PSP：</label>
                             <div class="col-sm-3">
-                                <input class="form-control" id="PSP">
+                                <input class="form-control" id="PSP1">
                             </div>
                         </div>
                         <div class="form-group">
@@ -431,7 +476,7 @@
                             </div>
                             <label for="PSP" class="col-md-3 control-label">PSP：</label>
                             <div class="col-sm-3">
-                                <input class="form-control" id="PSP">
+                                <input class="form-control" id="PSP2">
                             </div>
                         </div>
                         <div class="form-group">
@@ -439,7 +484,7 @@
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
                             </div>
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
                             </div>
                         </div>
                     </form>

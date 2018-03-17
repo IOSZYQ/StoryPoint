@@ -91,7 +91,7 @@ function modifyPassword() {
     });
 }
 
-function editeProject(id) {
+function editeProject() {
     setCSRFToken()
 
     $.ajax({
@@ -108,7 +108,8 @@ function editeProject(id) {
         },
         success:function (data) {
             if (data.status == 0) {
-                $('.edit-project-modal').modal('toggle')
+                // $('.edit-project-modal').modal('toggle')
+                window.parent.location.reload()
             }
             else {
                 alert(data.msg)
@@ -125,7 +126,7 @@ function editeProjectInfo() {
         url: '/project/edit_detail/',
         dataType: 'json',
         data:{
-            project_id:$("#project_id").val(),
+            project_id:$(".edit_project_id").val(),
             weight:$("#performanceWeight").val(),
             sp:$("#projectStandardSP").val(),
             impression:$("#ProjectEffectiveness").val(),
@@ -140,7 +141,31 @@ function editeProjectInfo() {
         },
         success:function (data) {
             if (data.status == 0) {
-                $('.input-department-modal').modal('toggle')
+                window.parent.location.reload()
+            }
+            else {
+                alert(data.msg)
+            }
+        }
+    })
+}
+
+function addTask(id) {
+    setCSRFToken()
+
+    $.ajax({
+        type: 'POST',
+        url: '/project/task/add/',
+        dataType: 'json',
+        data:{
+            projectId:id,
+            status:$("#taskStatus").val(),
+            group:$("#taskGroup").val(),
+            description:$("#taskDescription").val(),
+        },
+        success:function (data) {
+            if (data.status == 0) {
+                window.parent.location.reload()
             }
             else {
                 alert(data.msg)

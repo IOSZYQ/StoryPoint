@@ -1,61 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="../css/main.css" rel="stylesheet">
-    <link href="../css/team-detail.css" rel="stylesheet">
-    <script src="../js/main.js"></script>
-    <meta charset="UTF-8">
-    <title>团队详情</title>
-</head>
-<body>
-
-<div class="container">
-
-    <div class="header_container">
-        <div class="row">
-            <div class="col-md-8"></div>
-            <div class="col-md-4">
-                侯洋
-                <a>修改密码</a>
-                <a>退出登录</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="title"><h1>路书研发部项目管理</h1></div>
-
-    <ul class="nav nav-tabs">
-        <li role="presentation"><a href="./project.html">项目</a></li>
-        <li role="presentation" class="active"><a href="./team.html">团队</a></li>
-        <li role="presentation"><a href="kpi-team.html">绩效管理</a></li>
-    </ul>
-
+{% extends 'base.html' %}
+{% block title %}团队详情{% endblock %}
+{% block content %}
     <h3>团队详情</h3>
-    <h5>产品组</h5>
+    <h5>{{ group.name }}</h5>
     <table class="table table-hover">
         <tbody>
-            <tr>
-                <td>蔡晋超</td>
+            {% for user in users %}
+                <tr>
+                <td>{{ user.username }}</td>
                 <td>
-                    <span class="job">组长</span>
+                    <span class="job">{% if user.id == group.leader.id %}组长{% else %}组员{% endif %}</span>
                 </td>
                 <td>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">编辑</button>
                     <a type="button" class="btn btn-danger" href="javascript:deletePerson()">删除成员</a>
                 </td>
             </tr>
-            <tr>
-                <td>侯洋</td>
-                <td>
-                    <span class="job">组员</span>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">编辑</button>
-                    <a type="button" class="btn btn-danger" href="javascript:deletePerson()">删除成员</a>
-                </td>
-            </tr>
+            {% endfor %}
             <tr>
                 <td colspan="3">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">
@@ -107,13 +68,4 @@
             </div>
         </div>
     </div>
-
-</div> <!-- /container -->
-
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}

@@ -7,8 +7,8 @@ from .views import *
 
 urlpatterns = [
     url(r'^$', GroupListView.as_view(), name="group_list"),
-    url(r'^detail/(?P<project_id>\d+)/$', GroupDetailView.as_view(), name="group_detail"),
+    url(r'^detail/(?P<group_id>\d+)/$', GroupDetailView.as_view(), name="group_detail"),
     url(r'^add/$', AddGroupView.as_view(), name="add_group"),
-    url(r'^delete/(?P<project_id>\d+)/$', DeleteGroupView.as_view(), name="delete_group"),
+    url(r'^delete/(?P<group_id>\d+)/$', DeleteGroupView.as_view(), name="delete_group"),
 
 ]
