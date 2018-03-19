@@ -44,6 +44,26 @@ function setCSRFToken() {
     });
 }
 
+function selectAll() {
+    var checkbox1=document.getElementById("selectAllItem");
+    if(checkbox1.checked==true )
+    {
+        checkAllBox(true);
+    }
+    else
+    {
+        checkAllBox(false);
+    }
+}
+function checkAllBox(boolValue)
+{
+    var allcheck=document.getElementsByName("friendId");
+    for(var i=0;i<allcheck.length;i++)
+        if(allcheck[i].type=="checkbox")
+            allcheck[i].checked=boolValue;
+}
+
+
 function forgot() {
 
     setCSRFToken();
@@ -192,8 +212,10 @@ function deleteAllocTeam() {
 
 
 function getTask(_this) {
+
     setCSRFToken()
     console.log($(_this).attr('data-taskid'))
+    console.log(task)
     $.ajax({
             url:'/project/gettask/',
             type:'post',
