@@ -225,7 +225,27 @@ function getTask(_this) {
                 console.log(res);
             }
         })
+}
 
+function addAndEditTeam(id) {
+    setCSRFToken()
+    $.ajax({
+        type:'POST',
+        url:'/group/add/',
+        dataType: 'json',
+        data:{
+            teamId:id,
+            teamName:$("#teamName").val(),
+        },
+        success:function (data) {
+            if (data.status == 0) {
+                window.parent.location.reload()
+            }
+            else {
+                alert(data.msg)
+            }
+        }
+    })
 }
 
 function deleteTeam() {

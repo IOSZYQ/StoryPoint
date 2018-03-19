@@ -69,10 +69,13 @@ class CreateEditProjectInfoView(View):
             manager = request.POST.get("manager", "")
             status = request.POST.get("status", "")
             project_id = request.POST.get("project_id", "")
-            project = Project.objects.get(pk=project_id)
-            if project == None:
-                project = Project()
-            status = project.getStatusName(str=status)
+            if project_id != None:
+                project = Project.objects.get(pk=project_id)
+                if project == None:
+                    result = {"status": -1, 'msg': "id错误"}
+                    return HttpResponse(dumps(result), content_type='application/json')
+            else:
+                project = Project.object.create(name=name)
             project.name = name
             project.start_time = start_time.replace('年','-').replace('月','-').replace('日','')
             project.end_time = end_time.replace('年','-').replace('月','-').replace('日','')
@@ -137,6 +140,10 @@ class ProjectDetailView(View):
     def get(self, request, project_id):
             project = Project.objects.get(id=project_id)
             tasks = Task.objects.filter(project__id = project.id)
+            taskArray = []
+            for task in tasks:
+                taskArray.append(task.getDic())
+            # taskArray = dumps(taskArray)
             info = []
             info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
             info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
@@ -145,7 +152,7 @@ class ProjectDetailView(View):
             if project:
                 return render(request, 'project-detail.html', {
                     "project":project,
-                    'tasks':tasks,
+                    'tasks':taskArray,
                     "users":users,
                     'groups':groups
                 })
