@@ -432,11 +432,14 @@
                     <h4 class="modal-title title" id="createProjectModalLabel3">录入信息</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal">
+                    {% for task in tasks %}
+                        {% ifequal task.id 1 %}
+                            <form class="form-horizontal">
                         <div class="form-group">
                             <label for="projectStandardSP2" class="col-md-3 control-label">项目标准 GSP：</label>
+                            <input hidden id="taskId" value="{{ task.id }}">
                             <div class="col-sm-3">
-                                <input class="form-control" id="projectStandardSP2">
+                                <input class="form-control" id="projectStandardSP2" value="{{ task.gsp }}">
                             </div>
                         </div>
                         <input class="form-control" type="hidden" id="" name="taskid">
@@ -453,34 +456,38 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        {% for user in task.group.members.all %}
+                            <div class="form-group">
                             <div class="col-sm-1"></div>
                             <div class="col-sm-3">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox"> 侯洋
+                                        <input type="checkbox">{{ user.username }}
+                                        <input hidden value="{{ user.id }}">
                                     </label>
                                 </div>
                             </div>
                             <label for="PSP" class="col-md-3 control-label">PSP：</label>
                             <div class="col-sm-3">
-                                <input class="form-control" id="PSP1">
+                                <input class="form-control" id="PSP1" value="">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-3">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> 蔡晋超
-                                    </label>
-                                </div>
-                            </div>
-                            <label for="PSP" class="col-md-3 control-label">PSP：</label>
-                            <div class="col-sm-3">
-                                <input class="form-control" id="PSP2">
-                            </div>
-                        </div>
+                        {% endfor %}
+
+{#                        <div class="form-group">#}
+{#                            <div class="col-sm-1"></div>#}
+{#                            <div class="col-sm-3">#}
+{#                                <div class="checkbox">#}
+{#                                    <label>#}
+{#                                        <input type="checkbox"> 蔡晋超#}
+{#                                    </label>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <label for="PSP" class="col-md-3 control-label">PSP：</label>#}
+{#                            <div class="col-sm-3">#}
+{#                                <input class="form-control" id="PSP2">#}
+{#                            </div>#}
+{#                        </div>#}
                         <div class="form-group">
                             <div class="col-sm-6">
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
@@ -490,6 +497,9 @@
                             </div>
                         </div>
                     </form>
+                        {% endifequal %}
+                    {% endfor %}
+
                 </div>
             </div>
         </div>

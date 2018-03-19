@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.base import View
 from django.http import HttpResponse
+from json import dumps
 
 from .models import *
 # Create your views here.
@@ -27,8 +28,25 @@ class GroupDetailView(View):
 
 class AddGroupView(View):
     def post(self, request):
-
-        return HttpResponse("{'status':'success}")
+        name = request.POST.get('teamName','')
+        id = request.POST.get('teamId', '')
+        if name != '':
+            if id != '':
+                group = Group.object.get(pk=id)
+                if group != None:
+                    group.name = name
+                    group.save()
+                    return HttpResponse(dumps({'status': 0}), content_type='application/json')
+                else:
+                    result = {'status': -1, 'msg': 'id错误'}
+                    return HttpResponse(dumps(result), content_type='application/json')
+            else:
+                group = Group.objects.create.init(name=name)
+                group.save()
+                return HttpResponse(dumps({'status': 0}), content_type='application/json')
+        else:
+            result = {'status': -1, 'msg':'名字不能为空'}
+            return HttpResponse(dumps(result), content_type='application/json')
 
 class DeleteGroupView(View):
     def post(self, request):

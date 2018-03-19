@@ -90,6 +90,15 @@ class Task(models.Model):
     def __str__(self):
         return self.description
 
+    def getDic(self):
+        members = []
+        joined = []
+        for user in self.group.members.all():
+            members.append({'userid':user.id,'username':user.username})
+        for person_task in self.person_task.all():
+            joined.append({'userid':person_task.user.id,'username':person_task.user.username})
+        return {'id':self.id, 'gsp':self.gsp,'members':members, 'joined':joined,'groupname':self.group.name}
+
     def getScore(self):
         return round(self.project.getTimeProportion()*self.group.timeProportion +
                      self.project.getAcceptanceBugProportion()*self.group.acceptanceBugProportion +

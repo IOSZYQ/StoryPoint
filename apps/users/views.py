@@ -124,3 +124,25 @@ class ModifyPwdView(View):
             result = {'status':'-1', 'msg':'密码格式不正确'}
             return HttpResponse(dumps(result), content_type='application/json')
 
+class AddAndEditUserView(View):
+    def post(self, request):
+        username = request.POST.get('username','')
+        id = request.POST.get('userid', '')
+        if username != '':
+            if id != '':
+                user = UserProfile.object.get(pk=id)
+                if user != None:
+                    user.username = username
+                    user.save()
+                    return HttpResponse(dumps({'status': 0}), content_type='application/json')
+                else:
+                    result = {'status': -1, 'msg': 'id错误'}
+                    return HttpResponse(dumps(result), content_type='application/json')
+            else:
+                user = UserProfile.objects.create.init(username=username)
+                user.save()
+                return HttpResponse(dumps({'status': 0}), content_type='application/json')
+        else:
+            result = {'status': -1, 'msg':'名字不能为空'}
+            return HttpResponse(dumps(result), content_type='application/json')
+
