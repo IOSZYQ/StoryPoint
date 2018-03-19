@@ -143,7 +143,7 @@ class ProjectDetailView(View):
             taskArray = []
             for task in tasks:
                 taskArray.append(task.getDic())
-            taskArray = dumps(taskArray)
+            # taskArray = dumps(taskArray)
             info = []
             info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
             info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
