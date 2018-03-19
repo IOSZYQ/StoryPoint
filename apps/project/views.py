@@ -152,7 +152,7 @@ class ProjectDetailView(View):
             if project:
                 return render(request, 'project-detail.html', {
                     "project":project,
-                    'tasks':taskArray,
+                    'tasks':tasks,
                     "users":users,
                     'groups':groups
                 })

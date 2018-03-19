@@ -215,7 +215,6 @@ function getTask(_this) {
 
     setCSRFToken()
     console.log($(_this).attr('data-taskid'))
-    console.log(task)
     $.ajax({
             url:'/project/gettask/',
             type:'post',

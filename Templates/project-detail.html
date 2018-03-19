@@ -432,12 +432,10 @@
                     <h4 class="modal-title title" id="createProjectModalLabel3">录入信息</h4>
                 </div>
                 <div class="modal-body">
-                    {% for task in tasks %}
-                        {% ifequal task.id 1 %}
-                            <form class="form-horizontal">
+                    <form class="form-horizontal">
                         <div class="form-group">
                             <label for="projectStandardSP2" class="col-md-3 control-label">项目标准 GSP：</label>
-                            <input hidden id="taskId" value="{{ task.id }}">
+                            <input type="hidden" id="taskId" value="{{ task.id }}">
                             <div class="col-sm-3">
                                 <input class="form-control" id="projectStandardSP2" value="{{ task.gsp }}">
                             </div>
@@ -451,19 +449,18 @@
                             <div class="col-sm-3">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox"> 全部添加
+                                        <input type="checkbox" onClick="javascript:selectAll()" id="selectAllItem"> 全部添加
                                     </label>
                                 </div>
                             </div>
                         </div>
-                        {% for user in task.group.members.all %}
-                            <div class="form-group">
+
+                        <div class="form-group">
                             <div class="col-sm-1"></div>
                             <div class="col-sm-3">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox">{{ user.username }}
-                                        <input hidden value="{{ user.id }}">
+                                        <input type="checkbox" name="friendId"> 侯阳
                                     </label>
                                 </div>
                             </div>
@@ -472,34 +469,32 @@
                                 <input class="form-control" id="PSP1" value="">
                             </div>
                         </div>
-                        {% endfor %}
 
-{#                        <div class="form-group">#}
-{#                            <div class="col-sm-1"></div>#}
-{#                            <div class="col-sm-3">#}
-{#                                <div class="checkbox">#}
-{#                                    <label>#}
-{#                                        <input type="checkbox"> 蔡晋超#}
-{#                                    </label>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <label for="PSP" class="col-md-3 control-label">PSP：</label>#}
-{#                            <div class="col-sm-3">#}
-{#                                <input class="form-control" id="PSP2">#}
-{#                            </div>#}
-{#                        </div>#}
+                        <div class="form-group">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="friendId"> 蔡晋超
+                                    </label>
+                                </div>
+                            </div>
+                            <label for="PSP" class="col-md-3 control-label">PSP：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="PSP2">
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="col-sm-6">
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+
                             </div>
                             <div class="col-sm-6">
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
                             </div>
                         </div>
                     </form>
-                        {% endifequal %}
-                    {% endfor %}
-
                 </div>
             </div>
         </div>
