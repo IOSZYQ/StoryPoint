@@ -140,9 +140,9 @@ class ProjectDetailView(View):
     def get(self, request, project_id):
             project = Project.objects.get(id=project_id)
             tasks = Task.objects.filter(project__id = project.id)
-            taskArray = []
-            for task in tasks:
-                taskArray.append(task.getDic())
+            # taskArray = []
+            # for task in tasks:
+            #     taskArray.append(task.getDic())
             # taskArray = dumps(taskArray)
             info = []
             info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
@@ -206,13 +206,6 @@ class deleteTaskView(View):
         return HttpResponse("{'status':'success}")
 
 class getTask(View):
-    def post(self, request):
-        task_id = request.POST.get("task_id", "")
+    def get(self, request,task_id):
         task = Task.objects.get(pk=task_id)
-        users = []
-        for person_task in task.person_task.all():
-            date = {}
-            date['name'] = person_task.user.username
-            date['id'] = person_task.user.id
-            users.append(date)
-        return HttpResponse(dumps({'users':users,'id':task_id}),content_type='application/json')
+        return HttpResponse(dumps({task.getDic()}),content_type='application/json')

@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^edit_detail/$', EditorProjectDetailView.as_view(), name="edit_project_detail"),
     url(r'^delete/$', deleteProjectView.as_view(), name="delete_project"),
 
-    url(r'^gettask/$', getTask.as_view(), name="task_info"),
+    url(r'^gettask/(?P<task_id>\d+)$', getTask.as_view(), name="task_info"),
 
     url(r'task/', include(taskUrlPatterns, namespace='project_task'))
 ]
