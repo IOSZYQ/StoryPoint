@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from json import dumps
 
 from group.models import Group
 from users.models import UserProfile

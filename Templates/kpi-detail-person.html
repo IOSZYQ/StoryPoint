@@ -3,36 +3,26 @@
 {% block kpicontent %}
     <div class="row">
         <div class="col-md-12">
-            <h4>侯洋 绩效详情</h4>
+            <h4>{{ user.username }} 绩效详情</h4>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <h5>绩效评分：80 累计获得GSP：654</h5>
+            <h5>累计获得GSP：{{ sp }}</h5>
         </div>
     </div>
 
-    <table class="table table-bordered detailContainer">
+    {% for task in person_tasks %}
+        <table class="table table-bordered detailContainer">
         <tbody>
         <tr>
-            <td colspan="2">项目名称：<a href="project-detail.html">需求单项目</a></td>
-            <td>起止时间：2018.01.01 - 2018.03.01</td>
+            <td colspan="2">项目名称：<a href="{% url 'project:project_detail' task.task.project.id %}">{{ task.task.project.name }}</a></td>
+            <td>起止时间：{{ task.task.project.start_time }} - {{ task.task.project.end_time }}</td>
         </tr>
         <tr>
-            <td colspan="3">侯洋PSP：200</td>
+            <td colspan="3">{{ task.user.username }}的PSP值：{{ task.getSP }}</td>
         </tr>
         </tbody>
     </table>
-
-    <table class="table table-bordered detailContainer">
-        <tbody>
-        <tr>
-            <td colspan="2">项目名称：<a href="project-detail.html">需求单项目</a></td>
-            <td>起止时间：2018.01.01 - 2018.03.01</td>
-        </tr>
-        <tr>
-            <td colspan="3">侯洋PSP：200</td>
-        </tr>
-        </tbody>
-    </table>
+    {% endfor %}
 {% endblock %}

@@ -190,6 +190,22 @@ function deleteAllocTeam() {
     }
 }
 
+
+function getTask(_this) {
+    setCSRFToken()
+    console.log($(_this).attr('data-taskid'))
+    $.ajax({
+            url:'/project/gettask/',
+            type:'post',
+            dataType:'json',
+            data:{task_id:$(_this).attr('data-taskid')},
+            success:function (res) {
+                console.log(res);
+            }
+        })
+
+}
+
 function deleteTeam() {
     var r = confirm("是否删除小组，包括删除所有成员？")
     if (r === true) {

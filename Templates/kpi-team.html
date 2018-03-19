@@ -20,7 +20,7 @@
         <tbody>
             {% for group in result %}
                 <tr>
-                <th scope="row"><a href="{% url 'performance:user_list' %}">{{ group.name }}</a></th>
+                <th scope="row"><a href="{% url 'performance:group_detail' group.id %}">{{ group.name }}</a></th>
                 <td>{{ group.jx }}</td>
                 <td>{{ time }}</td>
             </tr>

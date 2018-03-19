@@ -197,3 +197,15 @@ class deleteTaskView(View):
         if task != None:
             task.delete()
         return HttpResponse("{'status':'success}")
+
+class getTask(View):
+    def post(self, request):
+        task_id = request.POST.get("task_id", "")
+        task = Task.objects.get(pk=task_id)
+        users = []
+        for person_task in task.person_task.all():
+            date = {}
+            date['name'] = person_task.user.username
+            date['id'] = person_task.user.id
+            users.append(date)
+        return HttpResponse(dumps({'users':users,'id':task_id}),content_type='application/json')
