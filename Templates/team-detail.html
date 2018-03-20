@@ -13,7 +13,7 @@
                 </td>
                 <td>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">编辑</button>
-                    <a type="button" class="btn btn-danger" href="javascript:deletePerson()">删除成员</a>
+                    <a type="button" class="btn btn-danger" href="javascript:deleteMember()">删除成员</a>
                 </td>
             </tr>
             {% endfor %}
@@ -37,8 +37,7 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <label for="name" class="col-md-3 control-label">姓名</label>
-                            <input hidden id="groupid" value="{{ group.id }}">
+                            <label for="name" class="col-md-3 control-label">成员姓名</label>
                             <div class="col-sm-6">
                                 <input class="form-control" id="username">
                             </div>
