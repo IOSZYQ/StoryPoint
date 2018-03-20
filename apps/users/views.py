@@ -1,11 +1,12 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import check_password,make_password
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from json import dumps
 
@@ -37,6 +38,15 @@ class ActiveUserView(View):
         else:
             return render(request, 'active_fail.html')
         return render(request, 'login.html')
+
+class DeleteUserView(View):
+    def post(self,request):
+        user_id = request.POST.get('userid',0)
+        user = UserProfile.objects.filter(user_id=user_id).last()
+        if user != None:
+            user.delete()
+        result = {'status': 0}
+        return HttpResponse(dumps(result), content_type='application/json')
 
 class AddUserView(View):
     def post(self, request):
@@ -94,6 +104,11 @@ class RegiserView(View):
         else:
             return render(request, "register.html", {"register_form": register_form})
 
+class LogoutView(View):
+    def get(self,request):
+        logout(request)
+        return HttpResponseRedirect(reverse('login'))
+
 class LoginView(View):
     def get(self, request):
         return render(request, "login.html",{})
@@ -106,7 +121,7 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, "project.html")
+                    return HttpResponseRedirect(reverse('index'))
                 else:
                     return render(request, "login.html", {"msg": "用户未激活!","login_form": login_form})
             else:
