@@ -37,9 +37,10 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <label for="name" class="col-md-3 control-label">小组名称</label>
+                            <label for="name" class="col-md-3 control-label">姓名</label>
+                            <input hidden id="groupid" value="{{ group.id }}">
                             <div class="col-sm-6">
-                                <input class="form-control" id="name">
+                                <input class="form-control" id="username">
                             </div>
                             <div class="col-sm-3">
                                 <div class="checkbox">
@@ -57,7 +58,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:addAndEditUser(0)">确定</a>
                             </div>
                             <div class="col-sm-6">
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>

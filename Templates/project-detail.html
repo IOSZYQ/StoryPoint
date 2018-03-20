@@ -7,7 +7,7 @@
             <td colspan="2"><h4>项目详情</h4></td>
             <td>
                 <a type="button" data-toggle="modal" data-target=".edit-project-modal">编辑</a>
-                <a href="javascript:deleteProject()">删除项目</a>
+                <a href="javascript:deleteProject({{ project.id }})">删除项目</a>
             </td>
         </tr>
         <tr>
@@ -164,7 +164,6 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
-                        <input hidden class="edit_project_id" value="{{ project.id }}">
                         <div class="form-group">
                             <label for="projectName" class="col-md-3 control-label" name="name">项目名称：</label>
                             <div class="col-sm-3">
@@ -203,7 +202,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProject()">确定</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProject({{ project.id }})">确定</a>
                             </div>
                             <div class="col-sm-6">
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>

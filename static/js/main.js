@@ -91,7 +91,7 @@ function modifyPassword() {
     });
 }
 
-function editeProject() {
+function editeProject(project_id) {
     setCSRFToken()
 
     $.ajax({
@@ -104,7 +104,7 @@ function editeProject() {
             start_time:$("#projectDateFrom").val(),
             end_time:$("#projectDateTo").val(),
             status:$("#projectStatus").val(),
-            project_id:$("#project_id").val(),
+            project_id:project_id,
         },
         success:function (data) {
             if (data.status == 0) {
@@ -174,9 +174,27 @@ function addTask(id) {
     })
 }
 
-function deleteProject() {
+function deleteProject(id) {
     var r = confirm("是否删除项目，所有信息清空？")
     if (r === true) {
+        setCSRFToken()
+
+    $.ajax({
+        type: 'POST',
+        url: '/project/delete/',
+        dataType: 'json',
+        data:{
+            id:id,
+        },
+        success:function (data) {
+            if (data.status == 0) {
+                window.parent.location.reload()
+            }
+            else {
+                alert(data.msg)
+            }
+        }
+    })
     }
     else {
     }
@@ -212,8 +230,8 @@ function addAndEditTeam(id) {
         url:'/group/add/',
         dataType: 'json',
         data:{
-            teamId:id,
-            teamName:$("#teamName").val(),
+            id:id,
+            name:$("#teamName").val(),
         },
         success:function (data) {
             if (data.status == 0) {
@@ -232,6 +250,30 @@ function deleteTeam() {
     }
     else {
     }
+}
+
+function addAndEditUser(id) {
+    setCSRFToken()
+    $.ajax({
+        type:'POST',
+        url:'/add/',
+        dataType: 'json',
+        data:{
+            userid:id,
+            username:$("#username").val(),
+            email:$("#email").val(),
+            groupid:$("#groupid").val(),
+            leader:true
+        },
+        success:function (data) {
+            if (data.status == 0) {
+                window.parent.location.reload()
+            }
+            else {
+                alert(data.msg)
+            }
+        }
+    })
 }
 
 function deletePerson() {

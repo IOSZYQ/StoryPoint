@@ -29,9 +29,11 @@ class ProjectListView(View):
         p = Paginator(all_project, 10, request=request)
         page_project = p.page(page)
         all_manager_names = set(Project.objects.values_list('manager__username', flat=True))
+        users = UserProfile.objects.all()
         return render(request, 'project.html', {
             "all_project":page_project,
             "all_managers":all_manager_names,
+            "users":users,
         })
     def post(self,request):
         manager_name = request.POST.get('manager','')
@@ -64,31 +66,34 @@ class CreateEditProjectInfoView(View):
         project_form = CreateEditProjectForm(request.POST)
         if project_form.is_valid():
             name = request.POST.get("name", "")
+            if Project.objects.filter(name=name):
+                result = {"status": -1, 'msg': "该项目已经存在请更换项目名字"}
+                return HttpResponse(dumps(result), content_type='application/json')
             start_time = request.POST.get("start_time", "")
             end_time = request.POST.get("end_time", "")
             manager = request.POST.get("manager", "")
             status = request.POST.get("status", "")
             project_id = request.POST.get("project_id", "")
-            if project_id != None:
+            if project_id != '0':
                 project = Project.objects.get(pk=project_id)
+                project.manager = UserProfile.objects.get(pk=manager)
                 if project == None:
                     result = {"status": -1, 'msg': "id错误"}
                     return HttpResponse(dumps(result), content_type='application/json')
             else:
-                project = Project.object.create(name=name)
+                project = Project.objects.create(name=name, manager_id=manager)
             project.name = name
-            project.start_time = start_time.replace('年','-').replace('月','-').replace('日','')
-            project.end_time = end_time.replace('年','-').replace('月','-').replace('日','')
-            project.manager = UserProfile.objects.get(pk=manager)
+            if start_time != '':
+                project.start_time = start_time
+            if end_time != '':
+                project.end_time = end_time
             project.status = status
             project.save()
-            # return HttpResponseRedirect("www.baidu.com")
-            # return HttpResponseRedirect('/project/detail/{0}/'.format(project_id))
-            result = {"status":0, 'msg':"成功了"}
+            result = {"status":0}
             return HttpResponse(dumps(result), content_type='application/json')
         else:
-            result = {"status":'-1'}
-            return HttpResponse(dumps(result).format(project_form.errors), content_type='application/json')
+            result = {"status":-1,'msg':'请填写名字'}
+            return HttpResponse(dumps(result), content_type='application/json')
 
 class EditorProjectDetailView(View):
     def post(self, request):
@@ -130,32 +135,38 @@ class EditorProjectDetailView(View):
 
 class deleteProjectView(View):
     def post(self, request):
-        project_id = request.POST.get("project_id", "")
-        project = Project.objects.get(pk=project_id)
-        if project != None:
-            project.delete()
-        return HttpResponse("{'status':'success}")
+        project_id = request.POST.get("id", "")
+        if project_id != '':
+            project = Project.objects.get(pk=project_id)
+            if project != None:
+                for task in project.project_task.all():
+                    for person_task in task.person_task.all():
+                        person_task.delete()
+                    task.delete()
+                project.delete()
+                result = {"status": 0}
+                return HttpResponse(dumps(result), content_type='application/json')
+        result = {"status": -1,'msg':'删除项目出错'}
+        return HttpResponse(dumps(result), content_type='application/json')
 
 class ProjectDetailView(View):
     def get(self, request, project_id):
-            project = Project.objects.get(id=project_id)
-            tasks = Task.objects.filter(project__id = project.id)
-            # taskArray = []
-            # for task in tasks:
-            #     taskArray.append(task.getDic())
-            # taskArray = dumps(taskArray)
-            info = []
-            info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
-            info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
-            users = UserProfile.objects.order_by('id')
-            groups = Group.objects.order_by('id')
-            if project:
-                return render(request, 'project-detail.html', {
-                    "project":project,
-                    'tasks':tasks,
-                    "users":users,
-                    'groups':groups
-                })
+        project = Project.objects.filter(id=project_id).last()
+        if project == None:
+            return HttpResponseRedirect('/')
+        tasks = Task.objects.filter(project__id = project.id)
+        info = []
+        info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
+        info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
+        users = UserProfile.objects.order_by('id')
+        groups = Group.objects.order_by('id')
+        if project:
+            return render(request, 'project-detail.html', {
+                "project":project,
+                'tasks':tasks,
+                "users":users,
+                'groups':groups
+            })
 
 class CreateEditTaskInfoView(View):
     def post(self,request):
@@ -186,15 +197,16 @@ class EditTaskDetailView(View):
         task_form = TaskForm(request.POST)
         if task_form.is_valid():
             gsp = request.POST.get("gsp", "")
-            members = request.POST.get("members", "")
+            joined = request.POST.get("joined", "")
             task_id = request.POST.get("task_id", "")
             task = Task.objects.get(pk=task_id)
             task.gsp = gsp
-            task.members.add(UserProfile.objects.get(pk=members))
+            for id,psp in joined:
+                task.person_task.add(PersonTask.objects.create(psp=psp,user_id=id,status=task.status,task_id=task_id))
             task.save()
-            return HttpResponse("{'status':'success', 'msg':'123'}", content_type='application/json')
+            return HttpResponse(dumps({'status':0}), content_type='application/json')
         else:
-            return HttpResponse("{'status':'fail', 'msg':{0}}".format(task_form.errors),
+            return HttpResponse(dumps({'status':-1, 'msg':{0}}).format(task_form.errors),
                                 content_type='application/json')
 
 class deleteTaskView(View):

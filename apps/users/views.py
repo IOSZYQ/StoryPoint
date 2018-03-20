@@ -6,12 +6,14 @@ from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import check_password,make_password
 from django.http import HttpResponse
+
 from json import dumps
 
 
 from .forms import *
 from .models import UserProfile,EmailVerifyRecord
 from utils.email_send import send_sp_email, send_forget_email
+from group.models import Group
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -35,6 +37,39 @@ class ActiveUserView(View):
         else:
             return render(request, 'active_fail.html')
         return render(request, 'login.html')
+
+class AddUserView(View):
+    def post(self, request):
+        add_form = AddForm(request.POST)
+        if add_form.is_valid():
+            user_id = request.POST.get('userid','')
+            user_name = request.POST.get('username','')
+            email = request.POST.get('email','')
+            if UserProfile.objects.filter(email=email):
+                return HttpResponse(dumps({'status': -1, 'msg': '邮箱已经存在,请更换邮箱'}), content_type="application/json")
+            if UserProfile.objects.filter(username=user_name):
+                return HttpResponse(dumps({'status': -1, 'msg': '名字已经存在,请更换名字'}), content_type="application/json")
+            if int(user_id) != 0:
+                user = UserProfile.objects.get(pk=user_id)
+                user.username = user_name
+                user.email = email
+                user.save()
+            else:
+                user = UserProfile.objects.create(username=user_name,email=email)
+                user.password = make_password('storypoint')
+                user.save()
+                groupid = request.POST.get('groupid','')
+                if groupid != '':
+                    group = Group.objects.get(pk=groupid)
+                    if group != None:
+                        group.members.add(user)
+                    leaderid = request.POST.get('leader','')
+                    if leaderid == 'true':
+                        group.leader = user
+                        group.save()
+            return HttpResponse(dumps({'status':0}),content_type='application/json')
+        else:
+            return HttpResponse(dumps({'status':-1,'msg':'错误的名字或邮箱'}), content_type="application/json")
 
 class RegiserView(View):
     def get(self, request):
