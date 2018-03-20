@@ -83,44 +83,6 @@ class DepartmentPerformanceView(View):
             sp += project.getSP()
         return render(request, 'kpi-detail-department.html', {'sp':sp,'all_project':all_project})
 
-
-            # all_project = Project.objects.all()
-        # start_time = request.GET.get('start', '')
-        # end_time = request.GET.get('end', '')
-        # start_time = '2018-1'
-        # end_time = '2018-3'
-        # if start_time and end_time:
-        #     start = getMonthFirstDay(start_time)
-        #     end = getMonthLastDay(end_time)
-        #     months = (end.month - start.month + 1) + (end.year - start.year) * 12
-        #     all_project = all_project.filter(end_time__range=[start, end])
-        # projectInfo = []
-        # apartment_sp = 0
-        # for project in all_project:
-        #     if project.executing > 0 and project.acceptance > 0:
-        #         weight = project.weight
-        #         time = project.getTimeProportion()
-        #         executing = project.getAcceptanceBugProportion()
-        #         release = project.getReleaseBugProportion()
-        #         impression = project.impression
-        #         groupResult = []
-        #         apartment_sp += project.getSP()
-        #         for task in project.project_task.all():
-        #             group_name = task.group.name
-        #             group_weight = task.group.getScore(time=time, acceptance=executing, release=release,
-        #                                                impression=impression)
-        #             group_sp = task.gsp * group_weight * weight
-        #             groupResult.append({"groupName": group_name, "groupSP": group_sp})
-        #         projectInfo.append({"name": project.name,
-        #                             "time": "{0}-{1}".format(project.start_time, project.end_time),
-        #                             "sp": project.getSP(),
-        #                             "group": groupResult})
-        # score = 100 if apartment_sp / 500 / months > 1 else apartment_sp * 100 / 500 / months
-        # result = {"score": score,
-        #           "sp": apartment_sp,
-        #           "project": projectInfo}
-
-
 class GroupPerformanceView(View):
     def get(self, request, group_id):
         if int(group_id) == 0:

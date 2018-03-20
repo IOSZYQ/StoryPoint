@@ -8,7 +8,8 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".create-project-modal">新建项目</button>
+{#                <a type="button" data-toggle="modal" data-target=".edit-project-modal">编辑</a>#}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".edit-project-modal">新建项目</button>
                 </div>
             </div>
             <form class="form-signin" action="" method="post">
@@ -115,4 +116,114 @@
         {% else %}
             <span class="disabled next">下一页 &rsaquo;&rsaquo;</span>
         {% endif %}
+
+    <!-- create project -->
+    <div class="modal fade edit-project-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title title" id="createProjectModalLabel">项目详情</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="projectName" class="col-md-3 control-label" name="name">项目名称：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectName" value="">
+                            </div>
+
+                            <label for="projectStatus" class="col-md-3 control-label">项目经理：</label>
+                            <select class="col-md-9 form-control projectStatus" id="projectPm" name="status">
+                                {% for user in users %}
+                                    {% if user.id == project.manager.id %}
+                                       <option value="{{ user.id }}" selected>{{ user.username }}</option>
+                                    {% else %}
+                                       <option value="{{ user.id }}">{{ user.username }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="projectDateFrom" class="col-md-3 control-label" name="start_time">创建时间：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="projectDateFrom" value="{{ project.start_time }}">
+                            </div>
+                            <label for="projectDateTo" class="col-md-3 control-label" name="end_time">终止时间：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" type="text" id="projectDateTo" value="{{ project.end_time }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectStatus" class="col-md-3 control-label">项目状态：</label>
+                            <select class="col-md-9 form-control projectStatus" id="projectStatus" name="status">
+                                <option value="executing">执行</option>
+                                <option value="acceptance">验收</option>
+                                <option value="release">发布</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProject('0')">确定</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
+                            </div>
+                        </div>
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+                var i18nObject = {
+                        previousMonth : "上个月",
+                        nextMonth     : "下个月",
+                        months        : ["一月",
+                                        "二月",
+                                        "三月",
+                                        "四月",
+                                        "五月",
+                                        "六月",
+                                        "七月",
+                                        "八月",
+                                        "九月",
+                                        "十月",
+                                        "十一月",
+                                        "十二月"],
+                        weekdays      : ["周日",
+                                        "周一",
+                                        "周二",
+                                        "周三",
+                                        "周四",
+                                        "周五",
+                                        "周六"],
+                        weekdaysShort : ["日",
+                                        "一",
+                                        "二",
+                                        "三",
+                                        "四",
+                                        "五",
+                                        "六"]
+                    };
+                new Pikaday(
+                {
+                    field: document.getElementById('projectDateFrom'),
+                    i18n: i18nObject,
+                    onSelect: function() {
+                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                    }
+                });
+                new Pikaday(
+                {
+                    field: document.getElementById('projectDateTo'),
+                    i18n: i18nObject,
+                    onSelect: function() {
+                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                    }
+                });
+            </script>
+    </div>
 {% endblock %}

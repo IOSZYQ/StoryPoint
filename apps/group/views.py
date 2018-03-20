@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from json import dumps
 
 from .models import *
+from .forms import AddGroupForm
 # Create your views here.
 
 class GroupListView(View):
@@ -18,7 +19,7 @@ class GroupDetailView(View):
     def get(self, request, group_id):
             group = Group.objects.get(id=group_id)
             users = group.members.all()
-            if group.leader.id != None and len(users) != 0:
+            if group.leader != None and len(users) != 0:
                 users = sorted(users, key=lambda user:user.id!=group.leader.id)
             if group:
                 return render(request, 'team-detail.html', {
@@ -28,11 +29,12 @@ class GroupDetailView(View):
 
 class AddGroupView(View):
     def post(self, request):
-        name = request.POST.get('teamName','')
-        id = request.POST.get('teamId', '')
-        if name != '':
-            if id != '':
-                group = Group.object.get(pk=id)
+        add_group_form = AddGroupForm(request.POST)
+        if add_group_form.is_valid():
+            name = request.POST.get('name', '')
+            id = request.POST.get('id', '')
+            if int(id) != 0:
+                group = Group.objects.get(pk=id)
                 if group != None:
                     group.name = name
                     group.save()
@@ -41,17 +43,20 @@ class AddGroupView(View):
                     result = {'status': -1, 'msg': 'id错误'}
                     return HttpResponse(dumps(result), content_type='application/json')
             else:
-                group = Group.objects.create.init(name=name)
+                if Group.objects.filter(name=name):
+                    return HttpResponse(dumps({'status':-1,'msg':'小组名字已被占用,请更换名字'}))
+                group = Group.objects.create(name=name)
                 group.save()
                 return HttpResponse(dumps({'status': 0}), content_type='application/json')
         else:
-            result = {'status': -1, 'msg':'名字不能为空'}
+            result = {'status': -1, 'msg': '名字不能为空'}
             return HttpResponse(dumps(result), content_type='application/json')
 
 class DeleteGroupView(View):
     def post(self, request):
-        group_id = request.POST.get('group_id', '')
-        group = Group.objects.get(pk=group_id)
-        group.delete()
-        return HttpResponse("{'status':'success}")
+        group_id = request.POST.get('id', '')
+        group = Group.objects.filter(pk=group_id).last()
+        if group != None:
+            group.delete()
+        return HttpResponse({'status':1},content_type='application/json')
 
