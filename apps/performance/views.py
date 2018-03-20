@@ -77,11 +77,15 @@ class DepartmentPerformanceView(View):
         end_month = 6
         start = getMonthFirstDay(year=start_year, month=start_month)
         end = getMonthLastDay(year=end_year, month=end_month)
+        months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year)) * 12
         sp = 0
         all_project = Project.objects.filter(end_time__range=[start, end])
         for project in all_project:
             sp += project.getSP()
-        return render(request, 'kpi-detail-department.html', {'sp':sp,'all_project':all_project})
+        score = round(sp/months/5,1)
+        if score > 100:
+            score = 100
+        return render(request, 'kpi-detail-department.html', {'sp':sp,'all_project':all_project, 'score':score})
 
 class GroupPerformanceView(View):
     def get(self, request, group_id):
@@ -93,6 +97,7 @@ class GroupPerformanceView(View):
         end_month = 6
         start = getMonthFirstDay(year=start_year, month=start_month)
         end = getMonthLastDay(year=end_year, month=end_month)
+        months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year)) * 12
         data = Task.objects.filter(group_id=group_id)
         all_task = []
         gsp = 0
@@ -100,7 +105,10 @@ class GroupPerformanceView(View):
             if task.project.end_time > start and task.project.end_time < end:
                 all_task.append(task)
                 gsp += task.getSP()
-        return render(request, 'kpi-detail-team.html', {'gsp':gsp,'all_task':all_task, 'group':Group.objects.get(pk=group_id)})
+        score = round(gsp/months, 1)
+        if score > 100:
+            score = 100
+        return render(request, 'kpi-detail-team.html', {'gsp':gsp,'all_task':all_task, 'group':Group.objects.get(pk=group_id), 'score':score})
 
 class UserPerformanceView(View):
     def get(self, request, user_id):
@@ -113,16 +121,17 @@ class UserPerformanceView(View):
         all_project = Project.objects.filter(end_time__range=[start, end])
         months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year)) * 12
         person_tasks = PersonTask.objects.filter(user_id=user_id)
-        sp = 0
+        psp = 0
         data = []
         for person_task in person_tasks:
             if person_task.task.project.end_time > start and person_task.task.project.end_time < end:
                 print(person_task.task.project.end_time)
-                sp += person_task.getSP()
+                psp += person_task.getSP()
                 data.append(person_task)
-
-
-        return render(request, 'kpi-detail-person.html', {'sp':sp, 'person_tasks':data,'user':UserProfile.objects.get(id=user_id)})
+        score = round(psp/months, 1)
+        if score > 100:
+            score = 100
+        return render(request, 'kpi-detail-person.html', {'psp':psp, 'person_tasks':data,'user':UserProfile.objects.get(id=user_id), 'score':score})
 
 # def getMonthFirstDay(year_month=None):
 #     if year_month:

@@ -205,11 +205,9 @@ class EditTaskDetailView(View):
                 if bool(dic['contain']) == True:
                     person_task = PersonTask.objects.filter(user_id=int(dic['id'])).last()
                     if person_task == None:
-                        task.person_task.add(PersonTask.objects.create(psp=int(dic['psp']), user_id=int(dic['id']),
-                                                                       task_id=int(task_id)))
-                    else:
-                        person_task.psp = dic['psp']
-                        task.person_task.add(person_task)
+                        person_task = PersonTask.objects.create(user_id=int(dic['id']),task_id=int(task_id))
+                    person_task.psp = dic['psp']
+                    task.person_task.add(person_task)
                 else:
                     person_task = PersonTask.objects.filter(user_id=int(dic['id'])).last()
                     if person_task != None:

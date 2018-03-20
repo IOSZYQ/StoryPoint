@@ -25,7 +25,7 @@
                     <div class="col-md-4">
                         {{ user.username }}
                         <a type="button" data-toggle="modal" data-target=".forgot-modify-password-modal">修改密码</a>
-                        <a href="{% url 'login' %}">退出登录</a>
+                        <a href="{% url 'logout' %}">退出登录</a>
                     </div>
                 </div>
             </div>
@@ -34,28 +34,11 @@
                     window.location.href="/login";
                 </script>
             {% endif %}
-{#            <div class="header_container">#}
-{#                <div class="row">#}
-{#                    <div class="col-md-8"></div>#}
-{#                    <div class="col-md-4">#}
-{#                        侯洋#}
-{#                        <a type="button" data-toggle="modal" data-target=".forgot-modify-password-modal">修改密码</a>#}
-{#                        <a href="{% url 'login' %}">退出登录</a>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
 
             <div class="title"><h1>路书研发部项目管理</h1></div>
 
-            {% block navtabs %}
-            <ul class="nav nav-tabs">
-                <li role="presentation" class="active"><a href="{% url 'index' %}">项目</a></li>
-                <li role="presentation"><a href="{% url 'group:group_list' %}">团队</a></li>
-                <li role="presentation"><a href="{% url 'performance:performance' %}">绩效管理</a></li>
-            </ul>
-            {% endblock %}
-            {% block content %}
-            {% endblock %}
+            {% block navtabs %}{% endblock %}
+            {% block content %}{% endblock %}
 
         </div> <!-- /container -->
 

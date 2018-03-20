@@ -355,6 +355,8 @@ function buildEditTeam(id, name) {
         div.removeChild(div.firstChild);
     }
 
+    if (name == undefined) name = "";
+
     var dialogString =
             '<div class="modal-dialog modal-lg" role="document">' +
                 '<div class="modal-content">' +
