@@ -42,7 +42,7 @@ class ActiveUserView(View):
 class DeleteUserView(View):
     def post(self,request):
         user_id = request.POST.get('userid',0)
-        user = UserProfile.objects.filter(user_id=user_id).last()
+        user = UserProfile.objects.filter(id=user_id).last()
         if user != None:
             user.delete()
         result = {'status': 0}
