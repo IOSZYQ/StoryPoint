@@ -208,4 +208,5 @@ class deleteTaskView(View):
 class getTask(View):
     def get(self, request,task_id):
         task = Task.objects.get(pk=task_id)
-        return HttpResponse(dumps({task.getDic()}),content_type='application/json')
+        task = task.getDic()
+        return HttpResponse(dumps(task),content_type='application/json')

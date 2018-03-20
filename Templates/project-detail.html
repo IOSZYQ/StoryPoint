@@ -75,7 +75,7 @@
                 <tr>
                     <td colspan="2">{{ task.group.name }}  {{ task.get_status_display }}    标准GSP: {{ task.gsp }}</td>
                     <td>
-                        <a onclick="getTask(this)" class="js-click" data-toggle="modal" data-target=".input-team-modal" data-taskid="{{ task.id }}">录入</a>
+                        <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
                         <a data-toggle="modal" data-target=".alloc-task-modal">修改</a>
                         <a href="javascript:deleteAllocTeam()">删除</a>
                         <input type="hidden" value="{{ task }}">
@@ -431,70 +431,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title title" id="createProjectModalLabel3">录入信息</h4>
                 </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label for="projectStandardSP2" class="col-md-3 control-label">项目标准 GSP：</label>
-                            <input type="hidden" id="taskId" value="{{ task.id }}">
-                            <div class="col-sm-3">
-                                <input class="form-control" id="projectStandardSP2" value="{{ task.gsp }}">
-                            </div>
-                        </div>
-                        <input class="form-control" type="hidden" id="" name="taskid">
-                        <div class="form-group">
-                            <label for="projectStandardSP2" class="col-md-3 control-label">项目成员</label>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-3">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" onClick="javascript:selectAll()" id="selectAllItem"> 全部添加
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                <div class="modal-body" id="modal-body">
 
-                        <div class="form-group">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-3">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="friendId"> 侯阳
-                                    </label>
-                                </div>
-                            </div>
-                            <label for="PSP" class="col-md-3 control-label">PSP：</label>
-                            <div class="col-sm-3">
-                                <input class="form-control" id="PSP1" value="">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-3">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="friendId"> 蔡晋超
-                                    </label>
-                                </div>
-                            </div>
-                            <label for="PSP" class="col-md-3 control-label">PSP：</label>
-                            <div class="col-sm-3">
-                                <input class="form-control" id="PSP2">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">确定</a>
-
-                            </div>
-                            <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

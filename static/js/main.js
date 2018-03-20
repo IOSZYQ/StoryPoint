@@ -45,7 +45,7 @@ function setCSRFToken() {
 }
 
 function selectAll() {
-    var checkbox1=document.getElementById("selectAllItem");
+    var checkbox1=document.getElementById("selectAllmember");
     if(checkbox1.checked==true )
     {
         checkAllBox(true);
@@ -57,7 +57,7 @@ function selectAll() {
 }
 function checkAllBox(boolValue)
 {
-    var allcheck=document.getElementsByName("friendId");
+    var allcheck=document.getElementsByName("chkMember");
     for(var i=0;i<allcheck.length;i++)
         if(allcheck[i].type=="checkbox")
             allcheck[i].checked=boolValue;
@@ -211,19 +211,145 @@ function deleteAllocTeam() {
 }
 
 
-function getTask(_this) {
+function getTask(id) {
 
     setCSRFToken()
-    console.log($(_this).attr('data-taskid'))
+
     $.ajax({
-            url:'/project/gettask/',
-            type:'post',
+            url:'/project/gettask/' + id,
+            type:'get',
             dataType:'json',
-            data:{task_id:$(_this).attr('data-taskid')},
             success:function (res) {
-                console.log(res);
+
+                // console.log(res);
+
+                var div = document.getElementById("modal-body");
+                while(div.hasChildNodes()) {
+                    div.removeChild(div.firstChild);
+                }
+
+                var dialogString =
+                    '<form class="form-horizontal">' +
+                        '<div class="form-group">' +
+                            '<label for="projectStandardSP2" class="col-md-3 control-label">项目标准 GSP：</label>' +
+                            '<div class="col-sm-3">' +
+                                '<input class="form-control" id="projectStandardSP2" name="projectStandardSP2" value=' + res.gsp + '>' +
+                            '</div>' +
+                        '</div>' +
+                        '<input type="hidden" id="taskid" name="taskid" value=' + res.id + '>' +
+                        '<div class="form-group">' +
+                            '<label for="projectStandardSP2" class="col-md-3 control-label">项目成员</label>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                            '<div class="col-sm-1"></div>' +
+                            '<div class="col-sm-3">' +
+                                '<div class="checkbox">' +
+                                    '<label>' +
+                                        '<input type="checkbox" onClick="javascript:selectAll()" id="selectAllmember"> 全部添加' +
+                                    '</label>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
+
+                res.joined.forEach(function (member, row) {
+                    var memberContent =[
+                        '<div class="form-group memberContainer" name="memberContainer">' +
+                            '<div class="col-sm-1"></div>' +
+                                '<div class="col-sm-3">' +
+                                    '<div class="checkbox">' +
+                                        '<label>' +
+                                            '<input type="checkbox" name="chkMember" checked>' + member.username +
+                                        '</label>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<input type="hidden" name="userId" value=' + member.userid + '>' +
+                                '<label for="PSP" class="col-md-3 control-label">PSP：</label>' +
+                                '<div class="col-sm-3">' +
+                                    '<input class="form-control" name="input_psp" value=' + member.psp + '>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>'
+                    ].join(' ');
+                    dialogString += memberContent;
+                });
+
+                res.members.forEach(function (member, row) {
+                    var memberContent =[
+                        '<div class="form-group memberContainer" name="memberContainer">' +
+                            '<div class="col-sm-1"></div>' +
+                                '<div class="col-sm-3">' +
+                                    '<div class="checkbox">' +
+                                        '<label>' +
+                                            '<input type="checkbox" name="chkMember">' + member.username +
+                                        '</label>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<input type="hidden" name="userId" value=' + member.userid + '>' +
+                                '<label for="PSP" class="col-md-3 control-label">PSP：</label>' +
+                                '<div class="col-sm-3">' +
+                                    '<input class="form-control" name="input_psp">' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>'
+                    ].join(' ');
+                    dialogString += memberContent;
+                });
+
+                dialogString +=
+                        '<div class="form-group">' +
+                            '<div class="col-sm-6">' +
+                                '<a class="btn btn-sm btn-primary btn-block" href="javascript:postTask()">确定</a>' +
+                            '</div>' +
+                            '<div class="col-sm-6">' +
+                                '<a class="btn btn-sm btn-primary btn-block" data-dismiss="modal">取消</a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</form>';
+
+                $('#modal-body').append(dialogString);
+
+                $('.input-team-modal').modal('show')
             }
         })
+}
+
+function postTask() {
+
+    setCSRFToken()
+
+    var joined = [];
+    var memberContainer = document.getElementsByName('memberContainer');
+    for(var i=0;i<memberContainer.length;i++){
+        var inputs = memberContainer[i].getElementsByTagName("input");
+        if (inputs.chkMember.checked) {
+            joined.push({
+                userid: inputs.userId.value,
+                value: inputs.input_psp.value
+            });
+        }
+    }
+
+    // console.log(JSON.stringify(joined))
+
+    $.ajax({
+        type:'POST',
+        url:'/project/task/',
+        dataType: 'json',
+        data:{
+            task_id:$("#taskid").val(),
+            gsp:$("#projectStandardSP2").val(),
+            joined:JSON.stringify(joined)
+        },
+        success:function (data) {
+            if (data.status == 0) {
+                $('.input-team-modal').modal('toggle')
+            }
+            else {
+                alert(data.msg)
+            }
+        }
+    })
+
 }
 
 function addAndEditTeam(id) {
