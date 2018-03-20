@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
-from json import dumps
+from json import dumps,loads
 
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
@@ -197,12 +197,23 @@ class EditTaskDetailView(View):
         task_form = TaskForm(request.POST)
         if task_form.is_valid():
             gsp = request.POST.get("gsp", "")
-            joined = request.POST.get("joined", "")
+            joined = loads(request.POST.get("joined", ""))
             task_id = request.POST.get("task_id", "")
             task = Task.objects.get(pk=task_id)
             task.gsp = gsp
             for dic in joined:
-                task.person_task.add(PersonTask.objects.create(psp=int(dic['psp']),user_id=int(dic['id']),status=task.status,task_id=int(task_id)))
+                if bool(dic['contain']) == True:
+                    person_task = PersonTask.objects.filter(user_id=int(dic['id'])).last()
+                    if person_task == None:
+                        task.person_task.add(PersonTask.objects.create(psp=int(dic['psp']), user_id=int(dic['id']),
+                                                                       task_id=int(task_id)))
+                    else:
+                        person_task.psp = dic['psp']
+                        task.person_task.add(person_task)
+                else:
+                    person_task = PersonTask.objects.filter(user_id=int(dic['id'])).last()
+                    if person_task != None:
+                        person_task.delete()
             task.save()
             return HttpResponse(dumps({'status':0}), content_type='application/json')
         else:

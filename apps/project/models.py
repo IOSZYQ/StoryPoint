@@ -92,12 +92,17 @@ class Task(models.Model):
 
     def getDic(self):
         members = []
-        joined = []
         for user in self.group.members.all():
-            members.append({'userid':user.id,'username':user.username})
-        for person_task in self.person_task.all():
-            joined.append({'userid':person_task.user.id,'username':person_task.user.username,'psp': person_task.psp})
-        return {'id':self.id, 'gsp':self.gsp,'members':members, 'joined':joined,'groupname':self.group.name, 'status':self.status}
+            userId = user.id
+            username= user.username
+            psp = 0
+            contain = False
+            person_task = PersonTask.objects.filter(user_id = userId).last()
+            if person_task != None:
+                psp = person_task.psp
+                contain = True
+            members.append({'userid':userId,'username':username,'psp': psp,'contain':contain})
+        return {'id':self.id, 'gsp':self.gsp,'members':members,'groupname':self.group.name, 'status':self.status}
 
     def getScore(self):
         return round(self.project.getTimeProportion()*self.group.timeProportion +
