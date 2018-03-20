@@ -5,10 +5,12 @@
         <tbody>
         <tr>
             <td colspan="2"><h4>项目详情</h4></td>
+            {% if request.user.is_superuser %}
             <td>
                 <a type="button" data-toggle="modal" data-target=".edit-project-modal">编辑</a>
                 <a href="javascript:deleteProject({{ project.id }})">删除项目</a>
             </td>
+            {% endif %}
         </tr>
         <tr>
             <td>项目名称：{{ project.name }}</td>

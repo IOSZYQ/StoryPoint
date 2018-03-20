@@ -70,7 +70,7 @@ function forgot() {
 
     $.ajax({
         type: 'POST',
-        url: '/forget/',
+        url: '/user/forget/',
         dataType: 'json',
         data: {
             email: $("#forgotEmail").val()
@@ -93,9 +93,10 @@ function modifyPassword() {
 
     $.ajax({
         type: 'POST',
-        url: '/modify_pwd/',
+        url: '/user/modify_pwd/',
         dataType: 'json',
         data: {
+            username:$("#username").val(),
             oldpassword: $("#oldpassword").val(),
             password1: $("#password1").val(),
             password2: $("#password2").val(),

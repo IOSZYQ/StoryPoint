@@ -94,7 +94,7 @@ class RegiserView(View):
             pass_word = request.POST.get("password", "")
             user_profile = UserProfile()
             user_profile.username = user_name
-            user_profile.is_active = False
+            # user_profile.is_active = False
             user_profile.email = user_name
             user_profile.password = make_password(pass_word)
             user_profile.save()
@@ -123,11 +123,14 @@ class LoginView(View):
                     login(request, user)
                     return HttpResponseRedirect(reverse('index'))
                 else:
-                    return render(request, "login.html", {"msg": "用户未激活!","login_form": login_form})
+                    result = {'status': -1, 'msg': '用户未激活'}
+                    return HttpResponse(dumps(result), content_type='application/json')
             else:
-                return render(request, "login.html", {"msg": "用户名或密码错误!","login_form": login_form})
+                result = {'status': -1, 'msg': '用户名或密码错误'}
+                return HttpResponse(dumps(result), content_type='application/json')
         else:
-            return render(request, "login.html", {"login_form": login_form})
+            result = {'status': -1, 'msg': '密码不能小于6位'}
+            return HttpResponse(dumps(result), content_type='application/json')
 
 class ForgetPwdView(View):
     def get(self, request):
@@ -153,25 +156,25 @@ class ModifyPwdView(View):
     def post(self, request):
         modify_form = ModifyPwdForm(request.POST)
         if modify_form.is_valid():
-            email = request.POST.get("email", "")
+            username = request.POST.get("username", "")
             pass_word = request.POST.get("oldpassword", "")
             pwd1 = request.POST.get("password1", "")
             pwd2 = request.POST.get("password2", "")
             if pwd1 != pwd2:
-                result = {'status':'-1', 'msg':'两次密码不一致'}
+                result = {'status':0, 'msg':'两次密码不一致'}
                 return HttpResponse(dumps(result), content_type='application/json')
-            user = authenticate(email=email, password=pass_word)
+            user = authenticate(username=username, password=pass_word)
             if user is not None:
-                user = UserProfile.objects.get(email=email)
+                user = UserProfile.objects.get(username=username)
                 user.password = make_password(pwd2)
                 user.save()
-                result = {'status':'0','msg':'密码更改成功'}
+                result = {'status':0,'msg':'密码更改成功'}
                 return HttpResponse(dumps(result), content_type='application/json')
             else:
-                result = {'status':'-1', 'msg':'密码错误'}
+                result = {'status':-1, 'msg':'密码错误'}
                 return HttpResponse(dumps(result), content_type='application/json')
         else:
-            result = {'status':'-1', 'msg':'密码格式不正确'}
+            result = {'status':-1, 'msg':'密码格式不正确'}
             return HttpResponse(dumps(result), content_type='application/json')
 
 class AddAndEditUserView(View):

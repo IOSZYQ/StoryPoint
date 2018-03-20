@@ -31,7 +31,7 @@
             </div>
             {% else %}
                 <script type="text/javascript">
-                    window.location.href="/login";
+                    window.location.href="{% url 'login' %}";
                 </script>
             {% endif %}
 
@@ -52,10 +52,11 @@
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal">
-                            <div class="form-group">
-                                <label for="inputPassword1" class="col-md-3 control-label">个人邮箱：</label>
-                                <div class="col-sm-9">asdfasdf@lushu.com</div>
-                            </div>
+{#                            <div class="form-group">#}
+{#                                <label for="inputPassword1" class="col-md-3 control-label">个人邮箱：</label>#}
+{#                                <div class="col-sm-9">{{ request.user.username }}</div>#}
+{#                            </div>#}
+                            <input type="hidden" id="username" value="{{ request.user.username }}">
                             <div class="form-group">
                                 <label for="oldpassword" class="col-md-3 control-label">原密码：</label>
                                 <div class="col-sm-9">
