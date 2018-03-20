@@ -231,6 +231,8 @@ function deleteAllocTeam() {
 
 function getTask(id) {
 
+    console.log("gettask");
+
     setCSRFToken()
 
     $.ajax({
@@ -239,7 +241,7 @@ function getTask(id) {
             dataType:'json',
             success:function (res) {
 
-                // console.log(res);
+                console.log(res);
 
                 var div = document.getElementById("modal-body");
                 while(div.hasChildNodes()) {
@@ -269,14 +271,15 @@ function getTask(id) {
                             '</div>' +
                         '</div>';
 
-                res.joined.forEach(function (member, row) {
+                res.members.forEach(function (member, row) {
+                    var check = member.contain ? 'checked' : '';
                     var memberContent =[
                         '<div class="form-group memberContainer" name="memberContainer">' +
                             '<div class="col-sm-1"></div>' +
                                 '<div class="col-sm-3">' +
                                     '<div class="checkbox">' +
                                         '<label>' +
-                                            '<input type="checkbox" name="chkMember" checked>' + member.username +
+                                            '<input type="checkbox" name="chkMember"' + check +  '>' + member.username +
                                         '</label>' +
                                     '</div>' +
                                 '</div>' +
@@ -284,28 +287,6 @@ function getTask(id) {
                                 '<label for="PSP" class="col-md-3 control-label">PSP：</label>' +
                                 '<div class="col-sm-3">' +
                                     '<input class="form-control" name="input_psp" value=' + member.psp + '>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>'
-                    ].join(' ');
-                    dialogString += memberContent;
-                });
-
-                res.members.forEach(function (member, row) {
-                    var memberContent =[
-                        '<div class="form-group memberContainer" name="memberContainer">' +
-                            '<div class="col-sm-1"></div>' +
-                                '<div class="col-sm-3">' +
-                                    '<div class="checkbox">' +
-                                        '<label>' +
-                                            '<input type="checkbox" name="chkMember">' + member.username +
-                                        '</label>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<input type="hidden" name="userId" value=' + member.userid + '>' +
-                                '<label for="PSP" class="col-md-3 control-label">PSP：</label>' +
-                                '<div class="col-sm-3">' +
-                                    '<input class="form-control" name="input_psp">' +
                                 '</div>' +
                             '</div>' +
                         '</div>'
@@ -339,12 +320,11 @@ function postTask() {
     var memberContainer = document.getElementsByName('memberContainer');
     for(var i=0;i<memberContainer.length;i++){
         var inputs = memberContainer[i].getElementsByTagName("input");
-        if (inputs.chkMember.checked) {
-            joined.push({
-                id: inputs.userId.value,
-                psp: inputs.input_psp.value
-            });
-        }
+        joined.push({
+            contain: inputs.chkMember.checked,
+            id: inputs.userId.value,
+            psp: inputs.input_psp.value
+        });
     }
 
     // console.log(JSON.stringify(joined))
