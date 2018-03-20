@@ -201,12 +201,12 @@ class EditTaskDetailView(View):
             task_id = request.POST.get("task_id", "")
             task = Task.objects.get(pk=task_id)
             task.gsp = gsp
-            for id,psp in joined:
-                task.person_task.add(PersonTask.objects.create(psp=psp,user_id=id,status=task.status,task_id=task_id))
+            for dic in joined:
+                task.person_task.add(PersonTask.objects.create(psp=int(dic['psp']),user_id=int(dic['id']),status=task.status,task_id=int(task_id)))
             task.save()
             return HttpResponse(dumps({'status':0}), content_type='application/json')
         else:
-            return HttpResponse(dumps({'status':-1, 'msg':{0}}).format(task_form.errors),
+            return HttpResponse(dumps({'status':-1, 'msg':'信息不全'}),
                                 content_type='application/json')
 
 class deleteTaskView(View):

@@ -341,8 +341,8 @@ function postTask() {
         var inputs = memberContainer[i].getElementsByTagName("input");
         if (inputs.chkMember.checked) {
             joined.push({
-                userid: inputs.userId.value,
-                value: inputs.input_psp.value
+                id: inputs.userId.value,
+                psp: inputs.input_psp.value
             });
         }
     }
@@ -351,7 +351,7 @@ function postTask() {
 
     $.ajax({
         type:'POST',
-        url:'/project/task/',
+        url:'/project/task/edit_detail/',
         dataType: 'json',
         data:{
             task_id:$("#taskid").val(),
