@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'forget/$', ForgetPwdView.as_view(), name="forget_pwd"),
     url(r'modify_pwd/$', ModifyPwdView.as_view(), name="modify_pwd"),
     url(r'^add/', AddUserView.as_view(), name='add_user'),
-    url(r'^delete/', AddUserView.as_view(), name='add_user'),
+    url(r'^delete/', DeleteUserView.as_view(), name='add_user'),
 ]

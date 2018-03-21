@@ -58,5 +58,6 @@ class DeleteGroupView(View):
         group = Group.objects.filter(pk=group_id).last()
         if group != None:
             group.delete()
-        return HttpResponse({'status':0})
+        result = {'status': 0}
+        return HttpResponse(dumps(result), content_type='application/json')
 

@@ -11,62 +11,30 @@
                 <td>
                     <span class="job">{% if user.id == group.leader.id %}组长{% else %}组员{% endif %}</span>
                 </td>
-                <td>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">编辑</button>
-                    <a type="button" class="btn btn-danger" href="javascript:deletePerson()">删除成员</a>
-                </td>
+                {% if request.user.is_superuser or request.user.id == group.leader.id %}
+                    <td>
+                        {% if user.id == group.leader.id %}
+                            <button type="button" class="btn btn-primary" onclick="javascript:editMember({{ group.id }}, {{ user.id }}, '{{ user.username }}', '{{ user.email }}', 1)">编辑</button>
+                        {% else %}
+                            <button type="button" class="btn btn-primary" onclick="javascript:editMember({{ group.id }}, {{ user.id }}, '{{ user.username }}', '{{ user.email }}', 0)">编辑</button>
+                        {% endif %}
+                        <a type="button" class="btn btn-danger" href="javascript:deleteMember({{ user.id }})">删除成员</a>
+                    </td>
+                {% endif %}
             </tr>
             {% endfor %}
-            <tr>
+            {% if request.user.is_superuser or request.user.id == group.leader.id %}
+                <tr>
                 <td colspan="3">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".add-person-modal">
+                    <button type="button" class="btn btn-primary" onclick="javascript:addMember({{ group.id }})">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                 </td>
             </tr>
+            {% endif %}
         </tbody>
     </table>
 
     <!-- input team -->
-    <div class="modal fade add-person-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label for="name" class="col-md-3 control-label">姓名</label>
-                            <input hidden id="groupid" value="{{ group.id }}">
-                            <div class="col-sm-6">
-                                <input class="form-control" id="username">
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> 设为组长
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" class="col-md-3 control-label">邮箱</label>
-                            <div class="col-sm-6">
-                                <input class="form-control" id="email">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:addAndEditUser(0)">确定</a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)">取消</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="modal fade add-and-edit-member-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="modal-body"></div>
 {% endblock %}

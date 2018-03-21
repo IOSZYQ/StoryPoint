@@ -42,7 +42,7 @@ class ActiveUserView(View):
 class DeleteUserView(View):
     def post(self,request):
         user_id = request.POST.get('userid',0)
-        user = UserProfile.objects.filter(user_id=user_id).last()
+        user = UserProfile.objects.filter(id=user_id).last()
         if user != None:
             user.delete()
         result = {'status': 0}
@@ -50,36 +50,42 @@ class DeleteUserView(View):
 
 class AddUserView(View):
     def post(self, request):
-        add_form = AddForm(request.POST)
-        if add_form.is_valid():
-            user_id = request.POST.get('userid','')
-            user_name = request.POST.get('username','')
-            email = request.POST.get('email','')
-            if UserProfile.objects.filter(email=email):
-                return HttpResponse(dumps({'status': -1, 'msg': '邮箱已经存在,请更换邮箱'}), content_type="application/json")
+        user_id = request.POST.get('userid', '')
+        user_name = request.POST.get('username', '')
+        email = request.POST.get('email', '')
+        if user_name == '':
+            return HttpResponse(dumps({'status': -1, 'msg': '名字不能为空'}), content_type="application/json")
+        groupid = request.POST.get('groupid', '')
+        group = Group.objects.get(pk=groupid)
+        leaderid = request.POST.get('leader', '')
+        if int(user_id) != 0:
+            user = UserProfile.objects.get(pk=user_id)
+            user.username = user_name
+            user.email = email
+            user.save()
+            if leaderid == 'true':
+                group.leader = user
+                group.save()
+            else:
+                if group.leader == user:
+                    group.leader = None
+                    group.save()
+        else:
             if UserProfile.objects.filter(username=user_name):
                 return HttpResponse(dumps({'status': -1, 'msg': '名字已经存在,请更换名字'}), content_type="application/json")
-            if int(user_id) != 0:
-                user = UserProfile.objects.get(pk=user_id)
-                user.username = user_name
-                user.email = email
-                user.save()
-            else:
-                user = UserProfile.objects.create(username=user_name,email=email)
-                user.password = make_password('storypoint')
-                user.save()
-                groupid = request.POST.get('groupid','')
-                if groupid != '':
-                    group = Group.objects.get(pk=groupid)
-                    if group != None:
-                        group.members.add(user)
-                    leaderid = request.POST.get('leader','')
-                    if leaderid == 'true':
-                        group.leader = user
-                        group.save()
-            return HttpResponse(dumps({'status':0}),content_type='application/json')
-        else:
-            return HttpResponse(dumps({'status':-1,'msg':'错误的名字或邮箱'}), content_type="application/json")
+            if email != '':
+                if UserProfile.objects.filter(email=email):
+                    return HttpResponse(dumps({'status': -1, 'msg': '邮箱已经存在,请更换邮箱'}), content_type="application/json")
+            user = UserProfile.objects.create(username=user_name, email=email)
+            user.password = make_password('123456')
+            user.save()
+
+            group.members.add(user)
+            if leaderid == 'true':
+                group.leader = user
+                group.save()
+
+        return HttpResponse(dumps({'status': 0}), content_type='application/json')
 
 class RegiserView(View):
     def get(self, request):

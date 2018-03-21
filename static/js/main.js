@@ -232,8 +232,6 @@ function deleteAllocTeam() {
 
 function getTask(id) {
 
-    console.log("gettask");
-
     setCSRFToken()
 
     $.ajax({
@@ -242,7 +240,7 @@ function getTask(id) {
             dataType:'json',
             success:function (res) {
 
-                console.log(res);
+                // console.log(res);
 
                 var div = document.getElementById("modal-body");
                 while(div.hasChildNodes()) {
@@ -351,16 +349,78 @@ function postTask() {
 
 }
 
+function buildEditTeam(id, name) {
+
+    var div = document.getElementById("modal-body");
+    while(div.hasChildNodes()) {
+        div.removeChild(div.firstChild);
+    }
+
+    if (name == undefined) name = "";
+
+    var dialogString =
+            '<div class="modal-dialog modal-lg" role="document">' +
+                '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                        '<form class="form-horizontal">' +
+                            '<div class="form-group">' +
+                                '<label for="teamName" class="col-md-3 control-label">小组名称</label>' +
+                                '<div class="col-sm-6">' +
+                                    '<input class="form-control" id="teamName" value=' + name + '>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="form-group">' +
+                                '<div class="col-sm-6">' +
+                                    '<a class="btn btn-sm btn-primary btn-block" href="javascript:addAndEditTeam(' + id + ')">确定</a>' +
+                                '</div>' +
+                                '<div class="col-sm-6">' +
+                                    '<a class="btn btn-sm btn-primary btn-block" data-dismiss="modal">取消</a>' +
+                                '</div>' +
+                            '</div>' +
+                        '</form>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+    $('#modal-body').append(dialogString);
+}
+
+function addTeam() {
+    buildEditTeam(null);
+    $('.add-and-edit-team-modal').modal('show');
+}
+
+function editTeam(id, name) {
+    buildEditTeam(id, name);
+    $('.add-and-edit-team-modal').modal('show');
+}
+
 function addAndEditTeam(id) {
+
     setCSRFToken()
+
+    var data = {};
+    if (id) {
+        data = {
+            id: id,
+            name:$("#teamName").val()
+        }
+    }
+    else {
+        data = {
+            id: 0,
+            name:$("#teamName").val()
+        }
+    }
+
     $.ajax({
         type:'POST',
         url:'/group/add/',
         dataType: 'json',
-        data:{
-            id:id,
-            name:$("#teamName").val(),
-        },
+        data: data,
         success:function (data) {
             if (data.status == 0) {
                 window.parent.location.reload()
@@ -372,27 +432,130 @@ function addAndEditTeam(id) {
     })
 }
 
-function deleteTeam() {
+function deleteTeam(id) {
+
+    setCSRFToken()
+
     var r = confirm("是否删除小组，包括删除所有成员？")
     if (r === true) {
+        $.ajax({
+            type:'POST',
+            url:'/group/delete/',
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success:function (data) {
+                if (data.status == 0) {
+                    window.parent.location.reload()
+                }
+                else {
+                    alert(data.msg)
+                }
+            }
+        })
     }
     else {
     }
+
 }
 
-function addAndEditUser(id) {
+function buildEditMember(groupId, userId, name, email, isLeader) {
+
+    var div = document.getElementById("modal-body");
+    while(div.hasChildNodes()) {
+        div.removeChild(div.firstChild);
+    }
+
+    if (name == undefined) name = "";
+    if (email == undefined) email = "";
+
+    var check = isLeader ? 'checked' : '';
+
+    var dialogString =
+        '<div class="modal-dialog modal-lg" role="document">' +
+            '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                    '<form class="form-horizontal">' +
+                        '<div class="form-group">' +
+                            '<label for="name" class="col-md-3 control-label">成员姓名</label>' +
+                            '<div class="col-sm-6">' +
+                                '<input class="form-control" id="name" name="name" value=' + name +'>' +
+                            '</div>' +
+                            '<div class="col-sm-3">' +
+                                '<div class="checkbox">' +
+                                    '<label>' +
+                                        '<input type="checkbox" id="chkLeader" name="chkLeader" ' + check + '> 设为组长' +
+                                    '</label>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                            '<label for="email" class="col-md-3 control-label">邮箱</label>' +
+                            '<div class="col-sm-6">' +
+                                '<input class="form-control" id="email" name="email" value=' + email + '>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                            '<div class="col-sm-6">' +
+                                '<a class="btn btn-sm btn-primary btn-block" onclick="javascript:addAndEditMember(' + groupId + ',' + userId + ')">确定</a>' +
+                            '</div>' +
+                            '<div class="col-sm-6">' +
+                                '<a class="btn btn-sm btn-primary btn-block" data-dismiss="modal">取消</a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</form>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+
+    $('#modal-body').append(dialogString);
+
+}
+
+function addMember(groupId) {
+    buildEditMember(groupId, null, null, null, null);
+    $('.add-and-edit-member-modal').modal('show');
+}
+
+function editMember(groupId, userId, name, email, isLeader) {
+    buildEditMember(groupId, userId, name, email, isLeader);
+    $('.add-and-edit-member-modal').modal('show');
+}
+
+function addAndEditMember(groupId, userId) {
+
+    setCSRFToken()
+
+    var data = {};
+    if (userId) {
+        data = {
+            groupid: groupId,
+            userid: userId,
+            username:$("#name").val(),
+            email:$("#email").val(),
+            leader: document.getElementById("chkLeader").checked
+        }
+    }
+    else {
+        data = {
+            groupid: groupId,
+            userid: 0,
+            username:$("#name").val(),
+            email:$("#email").val(),
+            leader: document.getElementById("chkLeader").checked
+        }
+    }
+
     setCSRFToken()
     $.ajax({
         type:'POST',
-        url:'/add/',
+        url:'/user/add/',
         dataType: 'json',
-        data:{
-            userid:id,
-            username:$("#username").val(),
-            email:$("#email").val(),
-            groupid:$("#groupid").val(),
-            leader:true
-        },
+        data: data,
         success:function (data) {
             if (data.status == 0) {
                 window.parent.location.reload()
@@ -404,9 +567,27 @@ function addAndEditUser(id) {
     })
 }
 
-function deletePerson() {
+function deleteMember(userid) {
+    setCSRFToken()
+
     var r = confirm("是否删除成员？")
     if (r === true) {
+        $.ajax({
+            type:'POST',
+            url:'/user/delete/',
+            dataType: 'json',
+            data: {
+                userid: userid
+            },
+            success:function (data) {
+                if (data.status == 0) {
+                    window.parent.location.reload()
+                }
+                else {
+                    alert(data.msg)
+                }
+            }
+        })
     }
     else {
     }

@@ -5,7 +5,7 @@
         <tbody>
         <tr>
             <td colspan="2"><h4>项目详情</h4></td>
-            {% if request.user.is_superuser %}
+            {% if request.user.is_superuser  or request.user.id == project.manager.id %}
             <td>
                 <a type="button" data-toggle="modal" data-target=".edit-project-modal">编辑</a>
                 <a href="javascript:deleteProject({{ project.id }})">删除项目</a>
@@ -32,9 +32,11 @@
             </tr>
             <tr>
                 <td colspan="2"><h5>产品研发部 项目SP值：{{ project.getSP }}</h5></td>
-                <td>
+                {% if request.user.is_superuser  or request.user.id == project.manager.id %}
+                    <td>
                     <a data-toggle="modal" data-target=".input-department-modal">录入</a>
                 </td>
+                {% endif %}
             </tr>
             <tr>
                 <td>绩效权重：{{ project.weight }}</td>
@@ -69,19 +71,25 @@
         <tbody>
             <tr>
                 <td colspan="2"><h4>部门任务</h4></td>
-                <td>
-                    <a data-toggle="modal" data-target=".alloc-task-modal">分配任务</a>
-                </td>
+                {% if request.user.is_superuser  or request.user.id == project.manager.id %}
+                    <td>
+                        <a data-toggle="modal" data-target=".alloc-task-modal">分配任务</a>
+                    </td>
+                {% endif %}
             </tr>
             {% for task in tasks %}
                 <tr>
                     <td colspan="2">{{ task.group.name }}  {{ task.get_status_display }}    标准GSP: {{ task.gsp }}</td>
-                    <td>
-                        <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
-                        <a data-toggle="modal" data-target=".alloc-task-modal">修改</a>
-                        <a href="javascript:deleteAllocTeam()">删除</a>
-                        <input type="hidden" value="{{ task }}">
-                    </td>
+                    {% if request.user.is_superuser  or request.user.id == project.manager.id or request.user.id == task.group.leader.id %}
+                        <td>
+                            <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
+                            {% if request.user.is_superuser  or request.user.id == project.manager.id %}
+                                <a data-toggle="modal" data-target=".alloc-task-modal">修改</a>
+                                <a href="javascript:deleteAllocTeam()">删除</a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                    <input type="hidden" value="{{ task }}">
                 </tr>
                 <tr>
                     <td colspan="3">{{ task.description }}</td>

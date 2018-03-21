@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import View
 from datetime import datetime, timedelta,date
 from django.http import HttpResponse,HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 import re
 
@@ -12,15 +13,17 @@ from project.models import Project,Task,PersonTask
 
 class PerformanceView(View):
     def get(self, request):
-        start_year = 2012
-        start_month = 1
-        end_year = 2018
-        end_month = 6
-        start = getMonthFirstDay(year=start_year, month=start_month)
-        end = getMonthLastDay(year=end_year, month=end_month)
+        startyear = request.GET.get('startyear', '2018')
+        startmonth = request.GET.get('startmonth', '1')
+        endyear = request.GET.get('endyear', '2018')
+        endmonth = request.GET.get('endmonth', '12')
+        start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
+        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
         all_project = Project.objects.filter(end_time__range=[start, end])
-        months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year))*12
-        time = "{0}.{1}-{2}.{3}".format(start_year, start_month, end_year,end_month)
+        months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear))*12
+        if months < 1:
+            months = 1
+        time = "{0}.{1}-{2}.{3}".format(startyear, startmonth, endyear,endmonth)
         data = {"0" : 0}
         result = [{'id':'0', 'jx':0, 'name':'产品研发部'}]
         for group in Group.objects.all():
@@ -35,19 +38,29 @@ class PerformanceView(View):
             if jx > 100:
                 jx = 100
             dic['jx'] = jx
-        return render(request, 'kpi-team.html', {"result": result, "time":time})
+        kpiurl = reverse('performance:performance')
+        return render(request, 'kpi-team.html', {
+            "result": result,
+            "time":time,
+            'url':kpiurl,
+            "startyear":startyear,
+            "startmonth":startmonth,
+            "endyear":endyear,
+            "endmonth":endmonth})
 
 class UserListPerformanceView(View):
     def get(self, request):
-        start_year = 2017
-        start_month = 1
-        end_year = 2018
-        end_month = 6
-        start = getMonthFirstDay(year=start_year, month=start_month)
-        end = getMonthLastDay(year=end_year, month=end_month)
+        startyear = request.GET.get('startyear', '2018')
+        startmonth = request.GET.get('startmonth', '1')
+        endyear = request.GET.get('endyear', '2018')
+        endmonth = request.GET.get('endmonth', '12')
+        start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
+        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
         all_project = Project.objects.filter(end_time__range=[start, end])
-        months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year)) * 12
-        time = "{0}.{1}-{2}.{3}".format(start_year, start_month, end_year, end_month)
+        months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
+        if months < 1:
+            months = 1
+        time = "{0}.{1}-{2}.{3}".format(startyear, startmonth, endyear, endmonth)
 
         data = {}
         result = []
@@ -66,60 +79,90 @@ class UserListPerformanceView(View):
 
         result = sorted(result, key=lambda user: user["jx"])
         result.reverse()
-
-        return render(request, 'kpi-person.html', {'result':result,'time':time})
+        kpiurl = reverse('performance:user_list')
+        return render(request, 'kpi-person.html', {
+            'result':result,
+            'time':time,
+            'url':kpiurl,
+            "startyear":startyear,
+            "startmonth":startmonth,
+            "endyear":endyear,
+            "endmonth":endmonth})
 
 class DepartmentPerformanceView(View):
     def get(self, request):
-        start_year = 2012
-        start_month = 1
-        end_year = 2018
-        end_month = 6
-        start = getMonthFirstDay(year=start_year, month=start_month)
-        end = getMonthLastDay(year=end_year, month=end_month)
-        months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year)) * 12
-        sp = 0
+        startyear = request.GET.get('startyear', '2018')
+        startmonth = request.GET.get('startmonth', '1')
+        endyear = request.GET.get('endyear', '2018')
+        endmonth = request.GET.get('endmonth', '12')
+        start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
+        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
         all_project = Project.objects.filter(end_time__range=[start, end])
+        months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
+        if months < 1:
+            months = 1
+        sp = 0
         for project in all_project:
             sp += project.getSP()
         score = round(sp/months/5,1)
         if score > 100:
             score = 100
-        return render(request, 'kpi-detail-department.html', {'sp':sp,'all_project':all_project, 'score':score})
+        kpiurl = reverse('performance:department')
+        return render(request, 'kpi-detail-department.html', {
+            'sp':sp,
+            'all_project':all_project,
+            'score':score,
+            'url':kpiurl,
+            "startyear":startyear,
+            "startmonth":startmonth,
+            "endyear":endyear,
+            "endmonth":endmonth})
 
 class GroupPerformanceView(View):
     def get(self, request, group_id):
         if int(group_id) == 0:
             return HttpResponseRedirect('/performance/department_detail/')
-        start_year = 2017
-        start_month = 1
-        end_year = 2018
-        end_month = 6
-        start = getMonthFirstDay(year=start_year, month=start_month)
-        end = getMonthLastDay(year=end_year, month=end_month)
-        months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year)) * 12
+        startyear = request.GET.get('startyear', '2018')
+        startmonth = request.GET.get('startmonth', '1')
+        endyear = request.GET.get('endyear', '2018')
+        endmonth = request.GET.get('endmonth', '12')
+        start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
+        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
+        months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
+        if months < 1:
+            months = 1
         data = Task.objects.filter(group_id=group_id)
         all_task = []
         gsp = 0
         for task in data:
-            if task.project.end_time > start and task.project.end_time < end:
+            if task.project.end_time != None and task.project.end_time > start and task.project.end_time < end:
                 all_task.append(task)
                 gsp += task.getSP()
         score = round(gsp/months, 1)
         if score > 100:
             score = 100
-        return render(request, 'kpi-detail-team.html', {'gsp':gsp,'all_task':all_task, 'group':Group.objects.get(pk=group_id), 'score':score})
+        kpiurl = reverse('performance:group_detail',kwargs={"group_id":group_id})
+        return render(request, 'kpi-detail-team.html', {
+            'gsp':gsp,'all_task':all_task,
+            'group':Group.objects.get(pk=group_id),
+            'score':score,
+            'url':kpiurl,
+            "startyear":startyear,
+            "startmonth":startmonth,
+            "endyear":endyear,
+            "endmonth":endmonth})
 
 class UserPerformanceView(View):
     def get(self, request, user_id):
-        start_year = 2017
-        start_month = 1
-        end_year = 2018
-        end_month = 6
-        start = getMonthFirstDay(year=start_year, month=start_month)
-        end = getMonthLastDay(year=end_year, month=end_month)
-        all_project = Project.objects.filter(end_time__range=[start, end])
-        months = (int(end_month) - int(start_month)) + 1 + (int(end_year) - int(start_year)) * 12
+        startyear = request.GET.get('startyear', '2018')
+        startmonth = request.GET.get('startmonth', '1')
+        endyear = request.GET.get('endyear', '2018')
+        endmonth = request.GET.get('endmonth', '12')
+        start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
+        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
+        months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
+        if months < 1:
+            months = 1
         person_tasks = PersonTask.objects.filter(user_id=user_id)
         psp = 0
         data = []
@@ -131,31 +174,17 @@ class UserPerformanceView(View):
         score = round(psp/months, 1)
         if score > 100:
             score = 100
-        return render(request, 'kpi-detail-person.html', {'psp':psp, 'person_tasks':data,'user':UserProfile.objects.get(id=user_id), 'score':score})
-
-# def getMonthFirstDay(year_month=None):
-#     if year_month:
-#         year_month = year_month.split('-')
-#         if len(year_month) == 2:
-#             year = int(year_month[0])
-#             month = int(year_month[1])
-#             if year and month and month>0 and month<13:
-#                 return date(year=year,month=month, day=1)
-#     return date(year=2017,month=12,day=31)
-#
-# def getMonthLastDay(year_month=None):
-#     if year_month:
-#         year_month = year_month.split('-')
-#         if len(year_month) == 2:
-#             year = int(year_month[0])
-#             month = int(year_month[1])
-#             if year and month and month>0 and month<13:
-#                 if month == 12:
-#                     lastDay = date(year=year+1,month=1, day=1) - timedelta(days=1)
-#                 else:
-#                     lastDay = date(year=year,month=month+1, day=1) - timedelta(days=1)
-#                 return lastDay
-#     return datetime.date(year=2050,month=1,day=1)
+        kpiurl = reverse('performance:user_detail',kwargs={"user_id":user_id})
+        return render(request, 'kpi-detail-person.html', {
+            'psp':psp,
+            'person_tasks':data,
+            'user':UserProfile.objects.get(id=user_id),
+            'score':score,
+            'url':kpiurl,
+            "startyear":startyear,
+            "startmonth":startmonth,
+            "endyear":endyear,
+            "endmonth":endmonth})
 
 def getMonthFirstDay(year=2018, month=1):
     return date(year=int(year),month=int(month),day=1)

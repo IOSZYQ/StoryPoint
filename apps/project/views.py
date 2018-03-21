@@ -11,17 +11,17 @@ from .forms import *
 from performance.views import getMonthFirstDay,getMonthLastDay
 class ProjectListView(View):
     def get(self, request):
-        all_project = Project.objects.all()
-        start_time = request.GET.get('start', '')
-        end_time = request.GET.get('end', '')
-        if start_time and end_time :
-            start = getMonthFirstDay(start_time)
-            end = getMonthLastDay(end_time)
-            all_project = all_project.filter(end_time__range=[start, end])
+        startyear = request.GET.get('startyear', '2018')
+        startmonth = request.GET.get('startmonth', '1')
+        endyear = request.GET.get('endyear', '2018')
+        endmonth = request.GET.get('endmonth', '12')
+        start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
+        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
+        all_project = Project.objects.filter(end_time__range=[start, end])
 
-        manager_name = request.GET.get('manager', '')
-        if manager_name:
-            all_project.filter(manager__username=manager_name)
+        manager_name = request.GET.get('manager', '全部')
+        if manager_name != '全部':
+            all_project = all_project.filter(manager__username=manager_name)
         try:
             page = request.GET.get('page', 1)
         except PageNotAnInteger:
@@ -34,28 +34,11 @@ class ProjectListView(View):
             "all_project":page_project,
             "all_managers":all_manager_names,
             "users":users,
-        })
-    def post(self,request):
-        manager_name = request.POST.get('manager','')
-        start = getMonthFirstDay(year=request.POST.get('startyear',''), month=request.POST.get('startmonth',''))
-        end = getMonthLastDay(year=request.POST.get('endyear',''), month=request.POST.get('endmonth',''))
-        all_project = Project.objects.filter(end_time__range=[start, end])
-        if manager_name != '全部':
-            all_project = all_project.filter(manager__username=manager_name)
-        try:
-            page = request.GET.get('page', 1)
-        except PageNotAnInteger:
-            page = 1
-        p = Paginator(all_project, 10, request=request)
-        page_project = p.page(page)
-
-        all_manager_names = set(Project.objects.values_list('manager__username', flat=True))
-        return render(request, 'project.html', {
-            "all_project": page_project,
-            "all_managers": all_manager_names,
-            "start_time": start,
-            "end_time": end,
-            "manager": manager_name
+            "startyear":startyear,
+            "startmonth":startmonth,
+            "endyear":endyear,
+            "endmonth":endmonth,
+            "manager":manager_name,
         })
 
 class CreateEditProjectInfoView(View):
@@ -66,9 +49,6 @@ class CreateEditProjectInfoView(View):
         project_form = CreateEditProjectForm(request.POST)
         if project_form.is_valid():
             name = request.POST.get("name", "")
-            if Project.objects.filter(name=name):
-                result = {"status": -1, 'msg': "该项目已经存在请更换项目名字"}
-                return HttpResponse(dumps(result), content_type='application/json')
             start_time = request.POST.get("start_time", "")
             end_time = request.POST.get("end_time", "")
             manager = request.POST.get("manager", "")
@@ -76,13 +56,16 @@ class CreateEditProjectInfoView(View):
             project_id = request.POST.get("project_id", "")
             if project_id != '0':
                 project = Project.objects.get(pk=project_id)
+                project.name = name
                 project.manager = UserProfile.objects.get(pk=manager)
                 if project == None:
                     result = {"status": -1, 'msg': "id错误"}
                     return HttpResponse(dumps(result), content_type='application/json')
             else:
+                if Project.objects.filter(name=name):
+                    result = {"status": -1, 'msg': "该项目已经存在请更换项目名字"}
+                    return HttpResponse(dumps(result), content_type='application/json')
                 project = Project.objects.create(name=name, manager_id=manager)
-            project.name = name
             if start_time != '':
                 project.start_time = start_time
             if end_time != '':

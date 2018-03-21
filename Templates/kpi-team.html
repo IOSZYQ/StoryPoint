@@ -1,8 +1,6 @@
 {% extends 'kpi-base.html' %}
 {% block title %}绩效管理{% endblock %}
-{% block calculatekpi %}
-        <button type="button" class="btn btn-primary cal">计算绩效</button>
-{% endblock %}
+{% block calculatekpi %}action="{% url 'performance' %}"{% endblock %}
 {% block kpicontent %}
     <ul class="nav nav-pills" role="tablist">
         <li role="presentation" class="active"><a>部门绩效</a></li>
