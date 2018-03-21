@@ -85,7 +85,7 @@
                             <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
                             {% if request.user.is_superuser  or request.user.id == project.manager.id %}
                                 <a data-toggle="modal" data-target=".alloc-task-modal">修改</a>
-                                <a href="javascript:deleteAllocTeam()">删除</a>
+                                <a onclick="javascript:deleteTask({{ task.id }})">删除</a>
                             {% endif %}
                         </td>
                     {% endif %}

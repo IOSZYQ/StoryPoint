@@ -211,7 +211,7 @@ class deleteTaskView(View):
         task = Task.objects.get(pk=task_id)
         if task != None:
             task.delete()
-        return HttpResponse("{'status':'success}")
+        return HttpResponse(dumps({'status':0}))
 
 class getTask(View):
     def get(self, request,task_id):

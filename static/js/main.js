@@ -115,9 +115,6 @@ function modifyPassword() {
 function editeProject(project_id) {
     setCSRFToken()
 
-    console.log($("#projectDateFrom").val())
-    console.log($("#expectProjectDateTo").val())
-
     $.ajax({
         type: 'POST',
         url: '/project/edit/',
@@ -225,9 +222,28 @@ function deleteProject(id) {
     }
 }
 
-function deleteAllocTeam() {
+function deleteTask(task_id) {
+
+    setCSRFToken();
+
     var r = confirm("是否删除分配小组？")
     if (r === true) {
+        $.ajax({
+            type:'POST',
+            url:'/project/task/delete/',
+            dataType: 'json',
+            data: {
+                task_id: task_id
+            },
+            success:function (data) {
+                if (data.status == 0) {
+                    window.parent.location.reload()
+                }
+                else {
+                    alert(data.msg)
+                }
+            }
+        })
     }
     else {
     }
@@ -236,7 +252,7 @@ function deleteAllocTeam() {
 
 function getTask(id) {
 
-    setCSRFToken()
+    setCSRFToken();
 
     $.ajax({
             url:'/project/gettask/' + id,
