@@ -98,7 +98,7 @@ class Task(models.Model):
             username= user.username
             psp = 0
             contain = False
-            person_task = PersonTask.objects.filter(user_id = userId).last()
+            person_task = PersonTask.objects.filter(user_id = userId,task_id=self.id).last()
             if person_task != None:
                 psp = person_task.psp
                 contain = True

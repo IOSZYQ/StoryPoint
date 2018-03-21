@@ -189,13 +189,14 @@ class EditTaskDetailView(View):
             task.gsp = gsp
             for dic in joined:
                 if bool(dic['contain']) == True:
-                    person_task = PersonTask.objects.filter(user_id=int(dic['id'])).last()
+                    person_task = PersonTask.objects.filter(user_id=int(dic['id']),task_id=task_id).last()
                     if person_task == None:
                         person_task = PersonTask.objects.create(user_id=int(dic['id']),task_id=int(task_id))
                     person_task.psp = dic['psp']
+                    person_task.save()
                     task.person_task.add(person_task)
                 else:
-                    person_task = PersonTask.objects.filter(user_id=int(dic['id'])).last()
+                    person_task = PersonTask.objects.filter(user_id=int(dic['id']),task_id=task_id).last()
                     if person_task != None:
                         person_task.delete()
             task.save()
