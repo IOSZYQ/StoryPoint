@@ -149,11 +149,11 @@
                         <div class="form-group">
                             <label for="projectDateFrom" class="col-md-3 control-label" name="start_time">创建时间：</label>
                             <div class="col-sm-3">
-                                <input class="form-control" id="projectDateFrom" value="{{ project.start_time }}">
+                                <input class="form-control" id="projectDateFrom">
                             </div>
-                            <label for="projectDateTo" class="col-md-3 control-label" name="end_time">终止时间：</label>
+                            <label for="expectProjectDateTo" class="col-md-3 control-label" name="expect_end_time">预计终止时间：</label>
                             <div class="col-sm-3">
-                                <input class="form-control" type="text" id="projectDateTo" value="{{ project.end_time }}">
+                                <input class="form-control" type="text" id="expectProjectDateTo">
                             </div>
                         </div>
                         <div class="form-group">
@@ -162,6 +162,7 @@
                                 <option value="executing">执行</option>
                                 <option value="acceptance">验收</option>
                                 <option value="release">发布</option>
+                                <option value="suspend">滞后</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -212,6 +213,14 @@
                 new Pikaday(
                 {
                     field: document.getElementById('projectDateFrom'),
+                    i18n: i18nObject,
+                    onSelect: function() {
+                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                    }
+                });
+                new Pikaday(
+                {
+                    field: document.getElementById('expectProjectDateTo'),
                     i18n: i18nObject,
                     onSelect: function() {
                         document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');

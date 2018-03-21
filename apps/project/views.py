@@ -51,6 +51,7 @@ class CreateEditProjectInfoView(View):
             name = request.POST.get("name", "")
             start_time = request.POST.get("start_time", "")
             end_time = request.POST.get("end_time", "")
+            expect_end_time = request.POST.get("expect_end_time","")
             manager = request.POST.get("manager", "")
             status = request.POST.get("status", "")
             project_id = request.POST.get("project_id", "")
@@ -70,6 +71,8 @@ class CreateEditProjectInfoView(View):
                 project.start_time = start_time
             if end_time != '':
                 project.end_time = end_time
+            if expect_end_time != '':
+                project.expect_end_time = expect_end_time
             project.status = status
             project.save()
             result = {"status":0}

@@ -197,17 +197,22 @@
                             <div class="col-sm-3">
                                 <input class="form-control" id="projectDateFrom" value="{{ project.start_time }}">
                             </div>
-                            <label for="projectDateTo" class="col-md-3 control-label" name="end_time">终止时间：</label>
+                            <label for="projectDateTo" class="col-md-3 control-label" name="end_time">实际终止时间：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" type="text" id="projectDateTo" value="{{ project.end_time }}">
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="expectProjectDateTo" class="col-md-3 control-label" name="expect_end_time">预计终止时间：</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" type="text" id="expectProjectDateTo" value="{{ project.expect_end_time }}">
+                            </div>
                             <label for="projectStatus" class="col-md-3 control-label">项目状态：</label>
                             <select class="col-md-9 form-control projectStatus" id="projectStatus" name="status">
-                                <option value="executing">执行</option>
-                                <option value="acceptance">验收</option>
-                                <option value="release">发布</option>
+                                <option value="executing" {% ifequal project.status 'executing' %}selected{% endifequal %}>执行</option>
+                                <option value="acceptance" {% ifequal project.status 'acceptance' %}selected{% endifequal %}>验收</option>
+                                <option value="release" {% ifequal project.status 'release' %}selected{% endifequal %}>发布</option>
+                                <option value="suspend" {% ifequal project.status 'suspend' %}selected{% endifequal %}>滞后</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -258,6 +263,14 @@
                 new Pikaday(
                 {
                     field: document.getElementById('projectDateFrom'),
+                    i18n: i18nObject,
+                    onSelect: function() {
+                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                    }
+                });
+                new Pikaday(
+                {
+                    field: document.getElementById('expectProjectDateTo'),
                     i18n: i18nObject,
                     onSelect: function() {
                         document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
@@ -403,6 +416,7 @@
                                 <option value="executing">执行</option>
                                 <option value="acceptance">验收</option>
                                 <option value="release">发布</option>
+                                <option value="suspend">滞后</option>
                             </select>
                             <label for="projectStatus3" class="col-md-3 control-label">分配部门：</label>
                             <select class="col-md-3 form-control projectStatus" id="taskGroup">

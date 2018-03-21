@@ -115,6 +115,9 @@ function modifyPassword() {
 function editeProject(project_id) {
     setCSRFToken()
 
+    console.log($("#projectDateFrom").val())
+    console.log($("#expectProjectDateTo").val())
+
     $.ajax({
         type: 'POST',
         url: '/project/edit/',
@@ -124,6 +127,7 @@ function editeProject(project_id) {
             manager:$("#projectPm").val(),
             start_time:$("#projectDateFrom").val(),
             end_time:$("#projectDateTo").val(),
+            expect_end_time:$("#expectProjectDateTo").val(),
             status:$("#projectStatus").val(),
             project_id:project_id,
         },

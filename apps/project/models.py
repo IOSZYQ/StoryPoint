@@ -14,7 +14,8 @@ class Project(models.Model):
     manager = models.ForeignKey(UserProfile, verbose_name="项目经理", related_name="manager_projects")
     create = models.DateField(auto_now_add=True, verbose_name="项目创建时间")
     start_time = models.DateField(auto_now_add=True,verbose_name="项目开始时间")
-    end_time = models.DateField(auto_now_add=True,verbose_name="项目终止时间")
+    end_time = models.DateField(auto_now_add=True,verbose_name="实际终止时间")
+    expect_end_time = models.DateField(auto_now_add=True,verbose_name="预计终止时间")
     executing = models.IntegerField(default=0, verbose_name="项目执行时间")
     acceptance = models.IntegerField(default=0,verbose_name="项目验收时间")
     sp = models.IntegerField(verbose_name="项目SP值", default=0)
@@ -26,7 +27,7 @@ class Project(models.Model):
     release_serious_bug = models.IntegerField(default=0, verbose_name="发布阶段严重缺陷")
     release_medium_bug = models.IntegerField(default=0, verbose_name="发布阶段中级缺陷")
     release_slight_bug = models.IntegerField(default=0, verbose_name="发布阶段低级缺陷")
-    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布")),default="executing",max_length=15)
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后")),default="executing",max_length=15)
 
     class Meta:
         verbose_name = "项目"
@@ -81,7 +82,7 @@ class Task(models.Model):
     description = models.CharField(max_length=1000, null=True, blank=True)
     gsp = models.IntegerField(verbose_name="小组SP值", default=0)
     create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
-    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布")),default="executing",max_length=15)
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后")),default="executing",max_length=15)
 
     class Meta:
         verbose_name = "小组任务"
@@ -124,7 +125,7 @@ class PersonTask(models.Model):
     psp = models.IntegerField(verbose_name="个人sp值", default=0)
     task = models.ForeignKey(Task, verbose_name="小组任务", null=True, blank=True, related_name="person_task")
     create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
-    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布")),default="executing",max_length=15)
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后")),default="executing",max_length=15)
 
     class Meta:
         verbose_name = "个人任务"
