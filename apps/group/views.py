@@ -61,3 +61,12 @@ class DeleteGroupView(View):
         result = {'status': 0}
         return HttpResponse(dumps(result), content_type='application/json')
 
+class AllGroupView(View):
+    def get(self, request):
+        dic = []
+        for group in Group.objects.all():
+            dic.append({'id':group.id,'name':group.name})
+        result = {'status': 0,'result':dic}
+        return HttpResponse(dumps(result), content_type='application/json')
+
+

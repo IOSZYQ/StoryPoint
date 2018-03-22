@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^detail/(?P<group_id>\d+)/$', GroupDetailView.as_view(), name="group_detail"),
     url(r'^add/$', AddGroupView.as_view(), name="add_group"),
     url(r'^delete/$', DeleteGroupView.as_view(), name="delete_group"),
-
+    url(r'^all_dic/$', AllGroupView.as_view(), name="group_dic"),
 ]
