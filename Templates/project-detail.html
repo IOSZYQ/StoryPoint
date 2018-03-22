@@ -73,7 +73,7 @@
                 <td colspan="2"><h4>部门任务</h4></td>
                 {% if request.user.is_superuser  or request.user.id == project.manager.id %}
                     <td>
-                        <a onclick="javascript:addTaskInfo({{ project.id }}, {{ groups }})">分配任务</a>
+                        <a onclick="javascript:addTaskInfo({{ project.id }})">分配任务</a>
                     </td>
                 {% endif %}
             </tr>
@@ -84,12 +84,11 @@
                         <td>
                             <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
                             {% if request.user.is_superuser  or request.user.id == project.manager.id %}
-                                <a onclick="javascript:editTaskInfo()">修改</a>
+                                <a onclick="javascript:editTaskInfo({{ project.id }}, {{ task.id }}, '{{ task.status }}', {{ task.group.id }}, '{{ task.description }}')">修改</a>
                                 <a onclick="javascript:deleteTaskInfo({{ task.id }})">删除</a>
                             {% endif %}
                         </td>
                     {% endif %}
-                    <input type="hidden" value="{{ task }}">
                 </tr>
                 <tr>
                     <td colspan="3">{{ task.description }}</td>
@@ -296,7 +295,7 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
-                        <input hidden id="project_id" value="{{ project.id }}">
+                        <input type="hidden" name="project_id" id="project_id" value="{{ project.id }}">
                         <div class="form-group">
                             <label for="performanceWeight" class="col-md-2 control-label">绩效权重：</label>
                             <div class="col-sm-2">

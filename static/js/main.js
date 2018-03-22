@@ -148,7 +148,7 @@ function editeProjectInfo() {
         url: '/project/edit_detail/',
         dataType: 'json',
         data:{
-            project_id:$(".edit_project_id").val(),
+            project_id:$("#project_id").val(),
             weight:$("#performanceWeight").val(),
             sp:$("#projectStandardSP").val(),
             impression:$("#ProjectEffectiveness").val(),
@@ -176,23 +176,22 @@ function deleteProject(id) {
     var r = confirm("是否删除项目，所有信息清空？")
     if (r === true) {
         setCSRFToken()
-
-    $.ajax({
-        type: 'POST',
-        url: '/project/delete/',
-        dataType: 'json',
-        data:{
-            id:id,
-        },
-        success:function (data) {
-            if (data.status == 0) {
-                window.parent.location.reload()
+        $.ajax({
+            type: 'POST',
+            url: '/project/delete/',
+            dataType: 'json',
+            data:{
+                id:id,
+            },
+            success:function (data) {
+                if (data.status == 0) {
+                    window.parent.location.reload()
+                }
+                else {
+                    alert(data.msg)
+                }
             }
-            else {
-                alert(data.msg)
-            }
-        }
-    })
+        })
     }
     else {
     }
@@ -200,6 +199,19 @@ function deleteProject(id) {
 
 
 function buildProjectTask(projectId, task_id, taskStatus, taskGroup, taskDescription) {
+
+    var groups = [];
+    $.ajax({
+            type: 'GET',
+            url: '/group/all_dic/',
+            dataType: 'json',
+            async:false,
+            success:function (data) {
+                if (data.status == 0) {
+                    groups = data.result;
+                }
+            }
+        })
 
     var div = document.getElementById("task-modal-body");
     while(div.hasChildNodes()) {
@@ -221,47 +233,53 @@ function buildProjectTask(projectId, task_id, taskStatus, taskGroup, taskDescrip
                         '<form class="form-horizontal">' +
                             '<div class="form-group">' +
                                 '<label for="projectStatus2" class="col-md-3 control-label">项目状态：</label>' +
-                                '<select class="col-md-3 form-control projectStatus" id="taskStatus">' +
-                                    '<option value="executing">执行</option>' +
-                                    '<option value="acceptance">验收</option>' +
-                                    '<option value="release">发布</option>' +
-                                    '<option value="suspend">滞后</option>' +
+                                '<select class="col-md-3 form-control projectStatus" id="taskStatus">';
+                                    if (taskStatus == 'executing') dialogString += '<option value="executing" selected>执行</option>';
+                                    else dialogString += '<option value="executing">执行</option>';
+                                    if (taskStatus == 'acceptance') dialogString += '<option value="acceptance" selected>验收</option>';
+                                    else dialogString += '<option value="acceptance">验收</option>';
+                                    if (taskStatus == 'release') dialogString += '<option value="release" selected>发布</option>';
+                                    else dialogString += '<option value="release">发布</option>';
+                                    if (taskStatus == 'suspend') dialogString += '<option value="suspend" selected>滞后</option>';
+                                    else dialogString += '<option value="suspend">滞后</option>';
+    dialogString +=
                                 '</select>' +
                                 '<label for="projectStatus3" class="col-md-3 control-label">分配部门：</label>' +
-                                '<select class="col-md-3 form-control projectStatus" id="taskGroup">' +
-                                    // {% for group in groups %}
-                                    //     <option value="{{ group.id }}">{{ group.name }}</option>
-                                    // {% endfor %}
-                                '</select>' +
-                            '</div>' +
-                            '<div class="form-group">' +
-                                '<div class="col-md-1"></div>' +
-                                '<div class="col-md-10">' +
-                                    '<textarea class="allocTaskComment" id="taskDescription"></textarea>' +
-                                '</div>' +
-                                '<div class="col-md-1"></div>' +
-                            '</div>' +
-                            '<div class="form-group">' +
-                                '<div class="col-sm-6">' +
-                                    '<a class="btn btn-sm btn-primary btn-block" href="javascript:addAndEditTaskInfo(' + projectId + ',' + task_id + ')">确定</a>' +
-                                '</div>' +
-                                '<div class="col-sm-6">' +
-                                    '<a class="btn btn-sm btn-primary btn-block" data-dismiss="modal">取消</a>' +
-                                '</div>' +
-                            '</div>' +
-                        '</form>' +
+                                '<select class="col-md-3 form-control projectStatus" id="taskGroup">';
+    groups.forEach(function (group) {
+        if (taskGroup == group.id)
+            dialogString += '<option value="' +  group.id + '" selected>' + group.name + '</option>';
+        else
+            dialogString += '<option value="' +  group.id + '">' + group.name + '</option>';
+    });
+    dialogString +=
+            '</select>' +
                     '</div>' +
+                        '<div class="form-group">' +
+                            '<div class="col-md-1"></div>' +
+                            '<div class="col-md-10">' +
+                                '<textarea class="allocTaskComment" id="taskDescription">' + taskDescription + '</textarea>' +
+                            '</div>' +
+                            '<div class="col-md-1"></div>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                            '<div class="col-sm-6">' +
+                                '<a class="btn btn-sm btn-primary btn-block" href="javascript:addAndEditTaskInfo(' + projectId + ',' + task_id + ')">确定</a>' +
+                            '</div>' +
+                            '<div class="col-sm-6">' +
+                                '<a class="btn btn-sm btn-primary btn-block" data-dismiss="modal">取消</a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</form>' +
                 '</div>' +
-            '</div>';
+            '</div>' +
+        '</div>';
 
     $('#task-modal-body').append(dialogString);
 
 }
 
-function addTaskInfo(projectId, groups) {
-    console.log(projectId)
-    console.log(groups)
-
+function addTaskInfo(projectId) {
     buildProjectTask(projectId, null, null, null, null);
     $('.add-and-edit-task-modal').modal('show');
 }
@@ -322,11 +340,9 @@ function addAndEditTaskInfo(projectId, task_id) {
 
 
 function deleteTaskInfo(task_id) {
-
-    setCSRFToken();
-
     var r = confirm("是否删除分配小组？")
     if (r === true) {
+        setCSRFToken();
         $.ajax({
             type:'POST',
             url:'/project/task/delete/',
@@ -358,9 +374,6 @@ function getTask(id) {
             type:'get',
             dataType:'json',
             success:function (res) {
-
-                // console.log(res);
-
                 var div = document.getElementById("modal-body");
                 while(div.hasChildNodes()) {
                     div.removeChild(div.firstChild);
@@ -389,7 +402,7 @@ function getTask(id) {
                             '</div>' +
                         '</div>';
 
-                res.members.forEach(function (member, row) {
+                res.members.forEach(function (member) {
                     var check = member.contain ? 'checked' : '';
                     var memberContent =[
                         '<div class="form-group memberContainer" name="memberContainer">' +
@@ -432,8 +445,6 @@ function getTask(id) {
 
 function postTask() {
 
-    setCSRFToken()
-
     var joined = [];
     var memberContainer = document.getElementsByName('memberContainer');
     for(var i=0;i<memberContainer.length;i++){
@@ -445,8 +456,7 @@ function postTask() {
         });
     }
 
-    // console.log(JSON.stringify(joined))
-
+    setCSRFToken()
     $.ajax({
         type:'POST',
         url:'/project/task/edit_detail/',
@@ -518,9 +528,6 @@ function editTeam(id, name) {
 }
 
 function addAndEditTeam(id) {
-
-    setCSRFToken()
-
     var data = {};
     if (id) {
         data = {
@@ -535,6 +542,7 @@ function addAndEditTeam(id) {
         }
     }
 
+    setCSRFToken()
     $.ajax({
         type:'POST',
         url:'/group/add/',
@@ -552,11 +560,9 @@ function addAndEditTeam(id) {
 }
 
 function deleteTeam(id) {
-
-    setCSRFToken()
-
     var r = confirm("是否删除小组，包括删除所有成员？")
     if (r === true) {
+        setCSRFToken()
         $.ajax({
             type:'POST',
             url:'/group/delete/',
@@ -647,8 +653,6 @@ function editMember(groupId, userId, name, email, isLeader) {
 
 function addAndEditMember(groupId, userId) {
 
-    setCSRFToken()
-
     var data = {};
     if (userId) {
         data = {
@@ -687,10 +691,9 @@ function addAndEditMember(groupId, userId) {
 }
 
 function deleteMember(userid) {
-    setCSRFToken()
-
     var r = confirm("是否删除成员？")
     if (r === true) {
+        setCSRFToken()
         $.ajax({
             type:'POST',
             url:'/user/delete/',

@@ -168,6 +168,7 @@ class CreateEditTaskInfoView(View):
             if task_id == "" or task== None:
                 task = Task.objects.create(project_id=projectId,group_id=group)
             task.status = status
+            task.group_id = group
             task.description = description
             task.save()
             result = {'status':0}
