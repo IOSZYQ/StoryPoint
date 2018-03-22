@@ -73,7 +73,7 @@
                 <td colspan="2"><h4>部门任务</h4></td>
                 {% if request.user.is_superuser  or request.user.id == project.manager.id %}
                     <td>
-                        <a data-toggle="modal" data-target=".alloc-task-modal">分配任务</a>
+                        <a onclick="javascript:addTaskInfo({{ project.id }}, {{ groups }})">分配任务</a>
                     </td>
                 {% endif %}
             </tr>
@@ -84,8 +84,8 @@
                         <td>
                             <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
                             {% if request.user.is_superuser  or request.user.id == project.manager.id %}
-                                <a data-toggle="modal" data-target=".alloc-task-modal">修改</a>
-                                <a onclick="javascript:deleteTask({{ task.id }})">删除</a>
+                                <a onclick="javascript:editTaskInfo()">修改</a>
+                                <a onclick="javascript:deleteTaskInfo({{ task.id }})">删除</a>
                             {% endif %}
                         </td>
                     {% endif %}
@@ -401,49 +401,7 @@
     </div>
 
     <!-- alloc task -->
-    <div class="modal fade alloc-task-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title title" id="createProjectModalLabel1">分配任务</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label for="projectStatus2" class="col-md-3 control-label">项目状态：</label>
-                            <select class="col-md-3 form-control projectStatus" id="taskStatus">
-                                <option value="executing">执行</option>
-                                <option value="acceptance">验收</option>
-                                <option value="release">发布</option>
-                                <option value="suspend">滞后</option>
-                            </select>
-                            <label for="projectStatus3" class="col-md-3 control-label">分配部门：</label>
-                            <select class="col-md-3 form-control projectStatus" id="taskGroup">
-                                {% for group in groups %}
-                                    <option value="{{ group.id }}">{{ group.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-1"></div>
-                            <div class="col-md-10">
-                                <textarea class="allocTaskComment" id="taskDescription"></textarea>
-                            </div>
-                            <div class="col-md-1"></div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:addTask({{ project.id }})">确定</a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    <div class="modal fade add-and-edit-task-modal" tabindex="-1" id="task-modal-body" role="dialog" aria-labelledby="myLargeModalLabel">
     </div>
 
     <!-- input team -->

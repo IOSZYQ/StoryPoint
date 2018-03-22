@@ -172,30 +172,6 @@ function editeProjectInfo() {
     })
 }
 
-function addTask(id) {
-    setCSRFToken()
-
-    $.ajax({
-        type: 'POST',
-        url: '/project/task/add/',
-        dataType: 'json',
-        data:{
-            projectId:id,
-            status:$("#taskStatus").val(),
-            group:$("#taskGroup").val(),
-            description:$("#taskDescription").val(),
-        },
-        success:function (data) {
-            if (data.status == 0) {
-                window.parent.location.reload()
-            }
-            else {
-                alert(data.msg)
-            }
-        }
-    })
-}
-
 function deleteProject(id) {
     var r = confirm("是否删除项目，所有信息清空？")
     if (r === true) {
@@ -222,7 +198,130 @@ function deleteProject(id) {
     }
 }
 
-function deleteTask(task_id) {
+
+function buildProjectTask(projectId, task_id, taskStatus, taskGroup, taskDescription) {
+
+    var div = document.getElementById("task-modal-body");
+    while(div.hasChildNodes()) {
+        div.removeChild(div.firstChild);
+    }
+
+    if (taskStatus == undefined) taskStatus = "";
+    if (taskGroup == undefined) taskGroup = "";
+    if (taskDescription == undefined) taskDescription = "";
+
+    var dialogString =
+            '<div class="modal-dialog modal-lg" role="document">' +
+                '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                        '<h4 class="modal-title title" id="createProjectModalLabel1">分配任务</h4>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                        '<form class="form-horizontal">' +
+                            '<div class="form-group">' +
+                                '<label for="projectStatus2" class="col-md-3 control-label">项目状态：</label>' +
+                                '<select class="col-md-3 form-control projectStatus" id="taskStatus">' +
+                                    '<option value="executing">执行</option>' +
+                                    '<option value="acceptance">验收</option>' +
+                                    '<option value="release">发布</option>' +
+                                    '<option value="suspend">滞后</option>' +
+                                '</select>' +
+                                '<label for="projectStatus3" class="col-md-3 control-label">分配部门：</label>' +
+                                '<select class="col-md-3 form-control projectStatus" id="taskGroup">' +
+                                    // {% for group in groups %}
+                                    //     <option value="{{ group.id }}">{{ group.name }}</option>
+                                    // {% endfor %}
+                                '</select>' +
+                            '</div>' +
+                            '<div class="form-group">' +
+                                '<div class="col-md-1"></div>' +
+                                '<div class="col-md-10">' +
+                                    '<textarea class="allocTaskComment" id="taskDescription"></textarea>' +
+                                '</div>' +
+                                '<div class="col-md-1"></div>' +
+                            '</div>' +
+                            '<div class="form-group">' +
+                                '<div class="col-sm-6">' +
+                                    '<a class="btn btn-sm btn-primary btn-block" href="javascript:addAndEditTaskInfo(' + projectId + ',' + task_id + ')">确定</a>' +
+                                '</div>' +
+                                '<div class="col-sm-6">' +
+                                    '<a class="btn btn-sm btn-primary btn-block" data-dismiss="modal">取消</a>' +
+                                '</div>' +
+                            '</div>' +
+                        '</form>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+    $('#task-modal-body').append(dialogString);
+
+}
+
+function addTaskInfo(projectId, groups) {
+    console.log(projectId)
+    console.log(groups)
+
+    buildProjectTask(projectId, null, null, null, null);
+    $('.add-and-edit-task-modal').modal('show');
+}
+
+function editTaskInfo(projectId, task_id, taskStatus, taskGroup, taskDescription) {
+    buildProjectTask(projectId, task_id, taskStatus, taskGroup, taskDescription);
+    $('.add-and-edit-task-modal').modal('show');
+}
+
+function addAndEditTaskInfo(projectId, task_id) {
+    setCSRFToken()
+
+    if (task_id == null || task_id == undefined) {
+        $.ajax({
+            type: 'POST',
+            url: '/project/task/add/',
+            dataType: 'json',
+            data:{
+                projectId:projectId,
+                status:$("#taskStatus").val(),
+                group:$("#taskGroup").val(),
+                description:$("#taskDescription").val(),
+            },
+            success:function (data) {
+                if (data.status == 0) {
+                    window.parent.location.reload()
+                }
+                else {
+                    alert(data.msg)
+                }
+            }
+        })
+    }
+    else {
+        $.ajax({
+            type: 'POST',
+            url: '/project/task/edit/',
+            dataType: 'json',
+            data:{
+                projectId:projectId,
+                task_id:task_id,
+                status:$("#taskStatus").val(),
+                group:$("#taskGroup").val(),
+                description:$("#taskDescription").val(),
+            },
+            success:function (data) {
+                if (data.status == 0) {
+                    window.parent.location.reload()
+                }
+                else {
+                    alert(data.msg)
+                }
+            }
+        })
+    }
+
+}
+
+
+function deleteTaskInfo(task_id) {
 
     setCSRFToken();
 
