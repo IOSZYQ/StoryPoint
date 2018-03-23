@@ -91,7 +91,7 @@ class EditorProjectDetailView(View):
                 return render(request, 'product-list.html', {"error": "项目不存在"})
             weight = request.POST.get("weight", "")
             sp = request.POST.get("sp", "")
-            impression = request.POST.get("impression", "")
+            impression = request.POST.get("impression", 0)
             executing = request.POST.get("executing", "")
             acceptance = request.POST.get("acceptance", "")
             acceptance_serious_bug = request.POST.get("acceptance_serious_bug", "")
