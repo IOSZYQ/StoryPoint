@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-md-8"></div>
                     <div class="col-md-4">
-                        {{ user.username }}
+                        {{ request.user.username }}
                         <a type="button" data-toggle="modal" data-target=".forgot-modify-password-modal">修改密码</a>
                         <a href="{% url 'logout' %}">退出登录</a>
                     </div>

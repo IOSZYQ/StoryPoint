@@ -49,28 +49,28 @@ class Project(models.Model):
         if self.executing > 0 and self.acceptance > 0:
             time = self.sp/22.0/(self.executing+self.acceptance)
             if time > 0 and time < 1:
-                return round(time,2)
+                return round(time + 0.00000001,2)
         return 1
 
     def getAcceptanceBugProportion(self):
         if self.acceptance_serious_bug > 0 or self.acceptance_slight_bug > 0 or self.acceptance_slight_bug > 0:
             acceptance = self.sp*1.0/(15*self.acceptance_serious_bug + 5*self.acceptance_medium_bug + 2*self.acceptance_slight_bug)
             if acceptance > 0 and acceptance < 1:
-                return round(acceptance,2)
+                return round(acceptance + 0.00000001,2)
         return 1
 
     def getReleaseBugProportion(self):
         if self.release_serious_bug > 0 or self.release_medium_bug > 0 or self.release_slight_bug > 0:
             release =self.sp*1.0/(1500*self.release_serious_bug + 500*self.release_medium_bug + 200*self.release_slight_bug)
             if release > 0 and release < 1:
-                return round(release,2)
+                return round(release + 0.00000001,2)
         return 1
 
     def getScore(self):
-        return round(self.getTimeProportion()*0.4 + self.getReleaseBugProportion()*0.3 + self.impression*0.3, 3)
+        return round(self.getTimeProportion()*0.4 + self.getReleaseBugProportion()*0.3 + self.impression*0.3 + 0.00000001, 2)
 
     def getSP(self):
-        return self.sp*self.weight*self.getScore()
+        return round(self.sp*self.weight*self.getScore() + 0.00000001,2)
 
 
 class Task(models.Model):
@@ -109,10 +109,10 @@ class Task(models.Model):
         return round(self.project.getTimeProportion()*self.group.timeProportion +
                      self.project.getAcceptanceBugProportion()*self.group.acceptanceBugProportion +
                      self.project.getReleaseBugProportion()*self.group.releaseBugProportion +
-                     self.project.impression*self.group.impressionProportion, 2)
+                     self.project.impression*self.group.impressionProportion + 0.00000001, 2)
 
     def getSP(self):
-        return round(self.gsp*self.project.weight*self.getScore(),1)
+        return round(self.gsp*self.project.weight*self.getScore() + 0.00000001,1)
 
     def scoreDescription(self):
         return "{0}项目评分=消耗时间比({1})*{2}% + 发布缺陷比({3})*{4}% + 项目成效({5})*{6}%".format(self.group.name,self.project.getTimeProportion(),int(self.group.timeProportion*100), self.project.getReleaseBugProportion(), int(self.group.releaseBugProportion*100),self.project.impression, int(self.group.impressionProportion*100))
@@ -138,13 +138,15 @@ class PersonTask(models.Model):
         return round(self.task.project.getTimeProportion()*self.task.group.timeProportion +
                      self.task.project.getAcceptanceBugProportion()*self.task.group.acceptanceBugProportion +
                      self.task.project.getReleaseBugProportion()*self.task.group.releaseBugProportion +
-                     self.task.project.impression*self.task.group.impressionProportion, 3)
+                     self.task.project.impression*self.task.group.impressionProportion + 0.00000001, 2)
 
     def getSP(self):
         sp = self.psp*self.task.project.weight*self.getScore()
-        if self.user.id == self.task.group.leader.id :
-            sp += self.task.getSP()*0.1
-        if self.user.id == self.task.project.manager.id:
-            sp += self.task.project.getSP()*0.05
-        return round(sp,1)
+        if self.task.group.leader != None:
+            if self.user.id == self.task.group.leader.id :
+                sp += self.task.getSP()*0.1
+        if self.task.project.manager != None:
+            if self.user.id == self.task.project.manager.id:
+                sp += self.task.project.getSP()*0.05
+        return round(sp + 0.00000001,1)
 

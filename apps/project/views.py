@@ -15,6 +15,7 @@ class ProjectListView(View):
         startmonth = request.GET.get('startmonth', '1')
         endyear = request.GET.get('endyear', '2018')
         endmonth = request.GET.get('endmonth', '12')
+        projectname= request.GET.get('projectname','')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
         end = getMonthLastDay(year=int(endyear), month=int(endmonth))
         all_project = Project.objects.filter(end_time__range=[start, end])
@@ -22,6 +23,8 @@ class ProjectListView(View):
         manager_name = request.GET.get('manager', '全部')
         if manager_name != '全部':
             all_project = all_project.filter(manager__username=manager_name)
+        if projectname != '':
+            all_project = all_project.filter(name__icontains=projectname)
         try:
             page = request.GET.get('page', 1)
         except PageNotAnInteger:
@@ -39,6 +42,7 @@ class ProjectListView(View):
             "endyear":endyear,
             "endmonth":endmonth,
             "manager":manager_name,
+            "projectname":projectname
         })
 
 class CreateEditProjectInfoView(View):
@@ -51,6 +55,10 @@ class CreateEditProjectInfoView(View):
             name = request.POST.get("name", "")
             start_time = request.POST.get("start_time", "")
             end_time = request.POST.get("end_time", "")
+            if end_time != '':
+                if datetime.strptime(end_time, "%Y-%m-%d") < datetime(year=2018,month=1,day=1):
+                    result = {"status": -1, 'msg': "请输入合适的项目完成日期"}
+                    return HttpResponse(dumps(result), content_type='application/json')
             expect_end_time = request.POST.get("expect_end_time","")
             manager = request.POST.get("manager", "")
             status = request.POST.get("status", "")
@@ -91,7 +99,7 @@ class EditorProjectDetailView(View):
                 return render(request, 'product-list.html', {"error": "项目不存在"})
             weight = request.POST.get("weight", "")
             sp = request.POST.get("sp", "")
-            impression = request.POST.get("impression", "")
+            impression = request.POST.get("impression", 0)
             executing = request.POST.get("executing", "")
             acceptance = request.POST.get("acceptance", "")
             acceptance_serious_bug = request.POST.get("acceptance_serious_bug", "")
