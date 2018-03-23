@@ -468,7 +468,7 @@ function postTask() {
         },
         success:function (data) {
             if (data.status == 0) {
-                $('.input-team-modal').modal('toggle')
+                window.parent.location.reload()
             }
             else {
                 alert(data.msg)

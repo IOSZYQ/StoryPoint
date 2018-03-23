@@ -1,76 +1,77 @@
 {% extends 'project-base.html' %}
 {% block content %}
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="input-group search">
-                        <span class="input-group-addon" id="sizing-addon2"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                        <input type="text" class="form-control" placeholder="请输入项目名称" aria-describedby="sizing-addon2">
-                    </div>
-                </div>
-                {% if request.user.is_superuser %}
-                <div class="col-md-4">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".edit-project-modal">新建项目</button>
-                </div>
-                {% endif %}
-            </div>
             <form  class="form-signin" action="{% url 'index' %}" method="get">
-            <div class="dateContainer">
-                起止时间：
-                <select class="form-control dateSelect" name="startyear">
-                    <option value="2018" {% ifequal startyear '2018' %}selected{% endifequal %}>2018</option>
-                    <option value="2019" {% ifequal startyear '2019' %}selected{% endifequal %}>2019</option>
-                    <option value="2020" {% ifequal startyear '2020' %}selected{% endifequal %}>2020</option>
-                    <option value="2021" {% ifequal startyear '2021' %}selected{% endifequal %}>2021</option>
-                    <option value="2022" {% ifequal startyear '2022' %}selected{% endifequal %}>2022</option>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="input-group search">
+                            <span class="input-group-addon" id="sizing-addon2"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
+                            <input type="text" name="projectname" class="form-control" placeholder="请输入项目名称" aria-describedby="sizing-addon2">
+                        </div>
+                    </div>
+                    {% if request.user.is_superuser %}
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".edit-project-modal">新建项目</button>
+                    </div>
+                    {% endif %}
+                </div>
 
-                </select>
-                <select class="form-control dateSelect" name="startmonth">
-                    <option value="1" {% ifequal startmonth '1' %}selected{% endifequal %}>1月</option>
-                    <option value="2" {% ifequal startmonth '2' %}selected{% endifequal %}>2月</option>
-                    <option value="3" {% ifequal startmonth '3' %}selected{% endifequal %}>3月</option>
-                    <option value="4" {% ifequal startmonth '4' %}selected{% endifequal %}>4月</option>
-                    <option value="5" {% ifequal startmonth '5' %}selected{% endifequal %}>5月</option>
-                    <option value="6" {% ifequal startmonth '6' %}selected{% endifequal %}>6月</option>
-                    <option value="7" {% ifequal startmonth '7' %}selected{% endifequal %}>7月</option>
-                    <option value="8" {% ifequal startmonth '8' %}selected{% endifequal %}>8月</option>
-                    <option value="9" {% ifequal startmonth '9' %}selected{% endifequal %}>9月</option>
-                    <option value="10" {% ifequal startmonth '10' %}selected{% endifequal %}>10月</option>
-                    <option value="11" {% ifequal startmonth '11' %}selected{% endifequal %}>11月</option>
-                    <option value="12" {% ifequal startmonth '12' %}selected{% endifequal %}>12月</option>
-                </select>
-                 ～
-                <select class="form-control dateSelect" name="endyear">
-                    <option value="2018" {% ifequal endyear '2018' %}selected{% endifequal %}>2018</option>
-                    <option value="2019" {% ifequal endyear '2019' %}selected{% endifequal %}>2019</option>
-                    <option value="2020" {% ifequal endyear '2020' %}selected{% endifequal %}>2020</option>
-                    <option value="2021" {% ifequal endyear '2021' %}selected{% endifequal %}>2021</option>
-                    <option value="2022" {% ifequal endyear '2022' %}selected{% endifequal %}>2022</option>
+                <div class="dateContainer">
+                    起止时间：
+                    <select class="form-control dateSelect" name="startyear">
+                        <option value="2018" {% ifequal startyear '2018' %}selected{% endifequal %}>2018</option>
+                        <option value="2019" {% ifequal startyear '2019' %}selected{% endifequal %}>2019</option>
+                        <option value="2020" {% ifequal startyear '2020' %}selected{% endifequal %}>2020</option>
+                        <option value="2021" {% ifequal startyear '2021' %}selected{% endifequal %}>2021</option>
+                        <option value="2022" {% ifequal startyear '2022' %}selected{% endifequal %}>2022</option>
 
-                </select>
-                <select class="form-control dateSelect" name="endmonth">
-                    <option value="1" {% ifequal endmonth '1' %}selected{% endifequal %}>1月</option>
-                    <option value="2" {% ifequal endmonth '2' %}selected{% endifequal %}>2月</option>
-                    <option value="3" {% ifequal endmonth '3' %}selected{% endifequal %}>3月</option>
-                    <option value="4" {% ifequal endmonth '4' %}selected{% endifequal %}>4月</option>
-                    <option value="5" {% ifequal endmonth '5' %}selected{% endifequal %}>5月</option>
-                    <option value="6" {% ifequal endmonth '6' %}selected{% endifequal %}>6月</option>
-                    <option value="7" {% ifequal endmonth '7' %}selected{% endifequal %}>7月</option>
-                    <option value="8" {% ifequal endmonth '8' %}selected{% endifequal %}>8月</option>
-                    <option value="9" {% ifequal endmonth '9' %}selected{% endifequal %}>9月</option>
-                    <option value="10" {% ifequal endmonth '10' %}selected{% endifequal %}>10月</option>
-                    <option value="11" {% ifequal endmonth '11' %}selected{% endifequal %}>11月</option>
-                    <option value="12" {% ifequal endmonth '12' %}selected{% endifequal %}>12月</option>
-                </select>
+                    </select>
+                    <select class="form-control dateSelect" name="startmonth">
+                        <option value="1" {% ifequal startmonth '1' %}selected{% endifequal %}>1月</option>
+                        <option value="2" {% ifequal startmonth '2' %}selected{% endifequal %}>2月</option>
+                        <option value="3" {% ifequal startmonth '3' %}selected{% endifequal %}>3月</option>
+                        <option value="4" {% ifequal startmonth '4' %}selected{% endifequal %}>4月</option>
+                        <option value="5" {% ifequal startmonth '5' %}selected{% endifequal %}>5月</option>
+                        <option value="6" {% ifequal startmonth '6' %}selected{% endifequal %}>6月</option>
+                        <option value="7" {% ifequal startmonth '7' %}selected{% endifequal %}>7月</option>
+                        <option value="8" {% ifequal startmonth '8' %}selected{% endifequal %}>8月</option>
+                        <option value="9" {% ifequal startmonth '9' %}selected{% endifequal %}>9月</option>
+                        <option value="10" {% ifequal startmonth '10' %}selected{% endifequal %}>10月</option>
+                        <option value="11" {% ifequal startmonth '11' %}selected{% endifequal %}>11月</option>
+                        <option value="12" {% ifequal startmonth '12' %}selected{% endifequal %}>12月</option>
+                    </select>
+                     ～
+                    <select class="form-control dateSelect" name="endyear">
+                        <option value="2018" {% ifequal endyear '2018' %}selected{% endifequal %}>2018</option>
+                        <option value="2019" {% ifequal endyear '2019' %}selected{% endifequal %}>2019</option>
+                        <option value="2020" {% ifequal endyear '2020' %}selected{% endifequal %}>2020</option>
+                        <option value="2021" {% ifequal endyear '2021' %}selected{% endifequal %}>2021</option>
+                        <option value="2022" {% ifequal endyear '2022' %}selected{% endifequal %}>2022</option>
 
-                <span class="pm">项目经理：</span>
-                <select class="form-control dateSelect" name="manager">
-                    <option {% ifequal manager '全部' %}selected{% endifequal %}>全部</option>
-                    {% for managername in all_managers %}
-                        <option {% ifequal manager managername %}selected{% endifequal %}>{{ managername }}</option>
-                    {% endfor %}
-                </select>
-                <input class="btn btn-primary" type="submit" value="搜索"></input>
-            </div>
+                    </select>
+                    <select class="form-control dateSelect" name="endmonth">
+                        <option value="1" {% ifequal endmonth '1' %}selected{% endifequal %}>1月</option>
+                        <option value="2" {% ifequal endmonth '2' %}selected{% endifequal %}>2月</option>
+                        <option value="3" {% ifequal endmonth '3' %}selected{% endifequal %}>3月</option>
+                        <option value="4" {% ifequal endmonth '4' %}selected{% endifequal %}>4月</option>
+                        <option value="5" {% ifequal endmonth '5' %}selected{% endifequal %}>5月</option>
+                        <option value="6" {% ifequal endmonth '6' %}selected{% endifequal %}>6月</option>
+                        <option value="7" {% ifequal endmonth '7' %}selected{% endifequal %}>7月</option>
+                        <option value="8" {% ifequal endmonth '8' %}selected{% endifequal %}>8月</option>
+                        <option value="9" {% ifequal endmonth '9' %}selected{% endifequal %}>9月</option>
+                        <option value="10" {% ifequal endmonth '10' %}selected{% endifequal %}>10月</option>
+                        <option value="11" {% ifequal endmonth '11' %}selected{% endifequal %}>11月</option>
+                        <option value="12" {% ifequal endmonth '12' %}selected{% endifequal %}>12月</option>
+                    </select>
+
+                    <span class="pm">项目经理：</span>
+                    <select class="form-control dateSelect" name="manager">
+                        <option {% ifequal manager '全部' %}selected{% endifequal %}>全部</option>
+                        {% for managername in all_managers %}
+                            <option {% ifequal manager managername %}selected{% endifequal %}>{{ managername }}</option>
+                        {% endfor %}
+                    </select>
+                    <input class="btn btn-primary" type="submit" value="搜索"></input>
+                </div>
             </form>
 
 
