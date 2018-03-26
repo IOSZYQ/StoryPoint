@@ -167,7 +167,7 @@ class ModifyPwdView(View):
             pwd1 = request.POST.get("password1", "")
             pwd2 = request.POST.get("password2", "")
             if pwd1 != pwd2:
-                result = {'status':0, 'msg':'两次密码不一致'}
+                result = {'status':-1, 'msg':'两次密码不一致'}
                 return HttpResponse(dumps(result), content_type='application/json')
             user = authenticate(username=username, password=pass_word)
             if user is not None:
