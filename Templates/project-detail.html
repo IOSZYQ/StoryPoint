@@ -168,7 +168,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <button type="button" class="close" onclick="javascript:closeEditProject()" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title title" id="createProjectModalLabel">项目详情</h4>
                 </div>
                 <div class="modal-body">
@@ -177,6 +177,7 @@
                             <label for="projectName" class="col-md-3 control-label" name="name">项目名称：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" id="projectName" value="{{ project.name }}">
+                                <input type="hidden" id="projectNameHidden" name="projectNameHidden" value="{{ project.name }}">
                             </div>
 
                             <label for="projectStatus" class="col-md-3 control-label">项目经理：</label>
@@ -189,22 +190,25 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
-
+                            <input type="hidden" id="projectPmHidden" name="projectPmHidden" value="{{ project.manager.id }}">
                         </div>
                         <div class="form-group">
                             <label for="projectDateFrom" class="col-md-3 control-label" name="start_time">创建时间：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" id="projectDateFrom" value="{{ project.start_time }}">
+                                <input type="hidden" id="projectDateFromHidden" name="projectDateFromHidden" value="{{ project.start_time }}">
                             </div>
                             <label for="projectDateTo" class="col-md-3 control-label" name="end_time">实际终止时间：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" type="text" id="projectDateTo" value="{{ project.end_time }}">
+                                <input type="hidden" id="projectDateToHidden" name="projectDateToHidden" value="{{ project.end_time }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="expectProjectDateTo" class="col-md-3 control-label" name="expect_end_time">预计终止时间：</label>
                             <div class="col-sm-3">
                                 <input class="form-control" type="text" id="expectProjectDateTo" value="{{ project.expect_end_time }}">
+                                <input type="hidden" id="expectProjectDateToHidden" name="expectProjectDateToHidden" value="{{ project.expect_end_time }}">
                             </div>
                             <label for="projectStatus" class="col-md-3 control-label">项目状态：</label>
                             <select class="col-md-9 form-control projectStatus" id="projectStatus" name="status">
@@ -213,13 +217,14 @@
                                 <option value="release" {% ifequal project.status 'release' %}selected{% endifequal %}>发布</option>
                                 <option value="suspend" {% ifequal project.status 'suspend' %}selected{% endifequal %}>滞后</option>
                             </select>
+                            <input type="hidden" id="projectStatusHidden" name="projectStatusHidden" value="{{ project.status }}">
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProject({{ project.id }})">确定</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editProject({{ project.id }})">确定</a>
                             </div>
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:closeEditProject()">取消</a>
                             </div>
                         </div>
                         {% csrf_token %}
@@ -229,61 +234,61 @@
         </div>
 
         <script>
-                var i18nObject = {
-                        previousMonth : "上个月",
-                        nextMonth     : "下个月",
-                        months        : ["一月",
-                                        "二月",
-                                        "三月",
-                                        "四月",
-                                        "五月",
-                                        "六月",
-                                        "七月",
-                                        "八月",
-                                        "九月",
-                                        "十月",
-                                        "十一月",
-                                        "十二月"],
-                        weekdays      : ["周日",
-                                        "周一",
-                                        "周二",
-                                        "周三",
-                                        "周四",
-                                        "周五",
-                                        "周六"],
-                        weekdaysShort : ["日",
-                                        "一",
-                                        "二",
-                                        "三",
-                                        "四",
-                                        "五",
-                                        "六"]
-                    };
-                new Pikaday(
-                {
-                    field: document.getElementById('projectDateFrom'),
-                    i18n: i18nObject,
-                    onSelect: function() {
-                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
-                    }
-                });
-                new Pikaday(
-                {
-                    field: document.getElementById('expectProjectDateTo'),
-                    i18n: i18nObject,
-                    onSelect: function() {
-                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
-                    }
-                });
-                new Pikaday(
-                {
-                    field: document.getElementById('projectDateTo'),
-                    i18n: i18nObject,
-                    onSelect: function() {
-                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
-                    }
-                });
-            </script>
+            var i18nObject = {
+                    previousMonth : "上个月",
+                    nextMonth     : "下个月",
+                    months        : ["一月",
+                                    "二月",
+                                    "三月",
+                                    "四月",
+                                    "五月",
+                                    "六月",
+                                    "七月",
+                                    "八月",
+                                    "九月",
+                                    "十月",
+                                    "十一月",
+                                    "十二月"],
+                    weekdays      : ["周日",
+                                    "周一",
+                                    "周二",
+                                    "周三",
+                                    "周四",
+                                    "周五",
+                                    "周六"],
+                    weekdaysShort : ["日",
+                                    "一",
+                                    "二",
+                                    "三",
+                                    "四",
+                                    "五",
+                                    "六"]
+                };
+            new Pikaday(
+            {
+                field: document.getElementById('projectDateFrom'),
+                i18n: i18nObject,
+                onSelect: function() {
+                    document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                }
+            });
+            new Pikaday(
+            {
+                field: document.getElementById('expectProjectDateTo'),
+                i18n: i18nObject,
+                onSelect: function() {
+                    document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                }
+            });
+            new Pikaday(
+            {
+                field: document.getElementById('projectDateTo'),
+                i18n: i18nObject,
+                onSelect: function() {
+                    document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
+                }
+            });
+        </script>
     </div>
 
     <!-- 录入 -->
@@ -291,7 +296,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <button type="button" class="close" onclick="javascript:closeEditeProjectInfo()" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
@@ -300,14 +305,17 @@
                             <label for="performanceWeight" class="col-md-2 control-label">绩效权重：</label>
                             <div class="col-sm-2">
                                 <input class="form-control" id="performanceWeight" value="{{ project.weight }}">
+                                <input type="hidden" id="performanceWeightHidden" value="{{ project.weight }}">
                             </div>
                             <label for="projectStandardSP" class="col-md-2 control-label"><nobr>项目标准SP：</nobr></label>
                             <div class="col-sm-2">
                                 <input class="form-control" id="projectStandardSP" value="{{ project.sp }}">
+                                <input type="hidden" id="projectStandardSPHidden" value="{{ project.sp }}">
                             </div>
                             <label for="ProjectEffectiveness" class="col-md-2 control-label">项目成效：</label>
                             <div class="col-sm-2">
                                 <input class="form-control" id="ProjectEffectiveness" value="{{ project.impression }}">
+                                <input type="hidden" id="ProjectEffectivenessHidden" value="{{ project.impression }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -315,6 +323,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="ExecutionTime" value="{{ project.executing }}">
+                                    <input type="hidden" id="ExecutionTimeHidden" value="{{ project.executing }}">
                                     <div class="input-group-addon">天</div>
                                 </div>
                             </div>
@@ -322,6 +331,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="AcceptanceTime" value="{{ project.acceptance }}">
+                                    <input type="hidden" id="AcceptanceTimeHidden" value="{{ project.acceptance }}">
                                     <div class="input-group-addon">天</div>
                                 </div>
                             </div>
@@ -337,6 +347,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="SeriousDefect" value="{{ project.acceptance_serious_bug }}">
+                                    <input type="hidden" id="SeriousDefectHidden" value="{{ project.acceptance_serious_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -344,6 +355,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="IntermediateDeficiency" value="{{ project.acceptance_medium_bug }}">
+                                    <input type="hidden" id="IntermediateDeficiencyHidden" value="{{ project.acceptance_medium_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -351,6 +363,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="LowLevelDefects" value="{{ project.acceptance_slight_bug }}">
+                                    <input type="hidden" id="LowLevelDefectsHidden" value="{{ project.acceptance_slight_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -366,6 +379,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="SeriousDefect2" value="{{ project.release_serious_bug }}">
+                                    <input type="hidden" id="SeriousDefect2Hidden" value="{{ project.release_serious_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -373,6 +387,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="IntermediateDeficiency2" value="{{ project.release_medium_bug }}">
+                                    <input type="hidden" id="IntermediateDeficiency2Hidden" value="{{ project.release_medium_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -380,6 +395,7 @@
                             <div class="col-sm-2">
                                 <div class="input-group">
                                     <input class="form-control" id="LowLevelDefects2" value="{{ project.release_slight_bug }}">
+                                    <input type="hidden" id="LowLevelDefects2Hidden" value="{{ project.release_slight_bug }}">
                                     <div class="input-group-addon">个</div>
                                 </div>
                             </div>
@@ -390,7 +406,7 @@
                                 <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProjectInfo()">确定</a>
                             </div>
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:closeEditeProjectInfo()">取消</a>
                             </div>
                         </div>
                     </form>

@@ -124,7 +124,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <button type="button" class="close" onclick="javascript:closeNewProject()" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title title" id="createProjectModalLabel">项目详情</h4>
                 </div>
                 <div class="modal-body">
@@ -145,7 +145,6 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
-
                         </div>
                         <div class="form-group">
                             <label for="projectDateFrom" class="col-md-3 control-label" name="start_time">创建时间：</label>
@@ -168,10 +167,10 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editeProject('0')">确定</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:editProject('0')">确定</a>
                             </div>
                             <div class="col-sm-6">
-                                <a class="btn btn-sm btn-primary btn-block" href="javascript:void(0)" data-dismiss="modal">取消</a>
+                                <a class="btn btn-sm btn-primary btn-block" href="javascript:closeNewProject()">取消</a>
                             </div>
                         </div>
                         {% csrf_token %}
@@ -222,14 +221,6 @@
                 new Pikaday(
                 {
                     field: document.getElementById('expectProjectDateTo'),
-                    i18n: i18nObject,
-                    onSelect: function() {
-                        document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');
-                    }
-                });
-                new Pikaday(
-                {
-                    field: document.getElementById('projectDateTo'),
                     i18n: i18nObject,
                     onSelect: function() {
                         document.createTextNode(this.getMoment().format('Do MMMM YYYY') + ' ');

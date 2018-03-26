@@ -112,7 +112,34 @@ function modifyPassword() {
     });
 }
 
-function editeProject(project_id) {
+function closeNewProject() {
+
+    $("#projectName").val('');
+    $("#projectPm").get(0).selectedIndex = 0;
+    $("#projectDateFrom").val('');
+    $("#expectProjectDateTo").val('');
+    $("#projectStatus").val("executing");
+
+    $('.edit-project-modal').modal('toggle')
+}
+
+function closeEditProject() {
+
+    $("#projectName").val($("#projectNameHidden").val());
+    $("#projectPm").val($("#projectPmHidden").val());
+    $("#projectDateFrom").val(convertDate($("#projectDateFromHidden").val()));
+    $("#projectDateTo").val(convertDate($("#projectDateToHidden").val()));
+    $("#expectProjectDateTo").val(convertDate($("#expectProjectDateToHidden").val()));
+    $("#projectStatus").val($("#projectStatusHidden").val());
+
+    $('.edit-project-modal').modal('toggle')
+}
+
+function convertDate(date) {
+    return date.replace('年','-').replace('月','-').replace('日','');
+}
+
+function editProject(project_id) {
     setCSRFToken()
 
     $.ajax({
@@ -130,7 +157,6 @@ function editeProject(project_id) {
         },
         success:function (data) {
             if (data.status == 0) {
-                // $('.edit-project-modal').modal('toggle')
                 window.parent.location.reload()
             }
             else {
@@ -138,6 +164,25 @@ function editeProject(project_id) {
             }
         }
     })
+}
+
+function closeEditeProjectInfo() {
+
+    $("#performanceWeight").val($("#performanceWeightHidden").val());
+    $("#projectStandardSP").val($("#projectStandardSPHidden").val());
+    $("#ProjectEffectiveness").val($("#ProjectEffectivenessHidden").val());
+    $("#ExecutionTime").val($("#ExecutionTimeHidden").val());
+    $("#AcceptanceTime").val($("#AcceptanceTimeHidden").val());
+
+    $("#SeriousDefect").val($("#SeriousDefectHidden").val());
+    $("#IntermediateDeficiency").val($("#IntermediateDeficiencyHidden").val());
+    $("#LowLevelDefects").val($("#LowLevelDefectsHidden").val());
+
+    $("#SeriousDefect2").val($("#SeriousDefect2Hidden").val());
+    $("#IntermediateDeficiency2").val($("#IntermediateDeficiency2Hidden").val());
+    $("#LowLevelDefects2").val($("#LowLevelDefects2Hidden").val());
+
+    $('.input-department-modal').modal('toggle')
 }
 
 function editeProjectInfo() {
