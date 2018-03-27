@@ -26,6 +26,8 @@ class ModifyPwdForm(forms.Form):
     password2 = forms.CharField(required=True, min_length=6)
 
 class AddForm(forms.ModelForm):
+    username = forms.CharField(required=True, error_messages={"required":"用户名不能为空"})
+    email = forms.EmailField(required=True, error_messages={"required":"邮箱不能为空","invalid":"邮箱格式不正确"})
     class Meta:
         model = UserProfile
         fields = ['username','email']

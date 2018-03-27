@@ -697,45 +697,89 @@ function editMember(groupId, userId, name, email, isLeader) {
 }
 
 function addAndEditMember(groupId, userId) {
-
+    setCSRFToken();
     var data = {};
+    var username = $("#name").val();
+    var email = $("#email").val();
+    var isLeader = document.getElementById("chkLeader").checked;
+
     if (userId) {
         data = {
             groupid: groupId,
             userid: userId,
-            username:$("#name").val(),
-            email:$("#email").val(),
-            leader: document.getElementById("chkLeader").checked
+            username:username,
+            email:email,
+            leader: isLeader
         }
+        $.ajax({
+            type:'POST',
+            url:'/user/edit/',
+            dataType: 'json',
+            data: data,
+            success:function (data) {
+                if (data.status == 0) {
+                    window.parent.location.reload()
+                }
+                else {
+                    alert(data.msg)
+                }
+            }
+        })
     }
     else {
-        data = {
-            groupid: groupId,
-            userid: 0,
-            username:$("#name").val(),
-            email:$("#email").val(),
-            leader: document.getElementById("chkLeader").checked
-        }
-    }
+        function doCreateMember() {
+            var data = {
+                groupid: groupId,
+                userid: 0,
+                username:username,
+                email:email,
+                leader: isLeader
+            };
 
-    setCSRFToken()
-    $.ajax({
-        type:'POST',
-        url:'/user/add/',
-        dataType: 'json',
-        data: data,
-        success:function (data) {
-            if (data.status == 0) {
-                window.parent.location.reload()
-            }
-            else {
-                alert(data.msg)
-            }
+            $.ajax({
+                type:'POST',
+                url:'/user/add/',
+                dataType: 'json',
+                data: data,
+                success:function (data) {
+                    if (data.status == 0) {
+                        window.parent.location.reload()
+                    }
+                    else {
+                        alert(data.msg)
+                    }
+                }
+            });
         }
-    })
+
+        $.ajax({
+            type: 'POST',
+            url: '/user/check/',
+            dataType: 'json',
+            data:{
+                username:username,
+                email:email,
+            },
+            success:function (data) {
+                console.log(data);
+                if (data.status == 0) {
+                    doCreateMember();
+                }else {
+                    if (data.status == 1000) {
+                        if (confirm(data.msg)) {
+                            doCreateMember();
+                        }
+                    }
+                    if (data.status == -1) {
+                        alert(data.msg)
+                    }
+                }
+            }
+        });
+    }
 }
 
-function deleteMember(userid) {
+function deleteMember(userid,groupid) {
     var r = confirm("是否删除成员？")
     if (r === true) {
         setCSRFToken()
@@ -744,7 +788,8 @@ function deleteMember(userid) {
             url:'/user/delete/',
             dataType: 'json',
             data: {
-                userid: userid
+                userid: userid,
+                groupid:groupid
             },
             success:function (data) {
                 if (data.status == 0) {

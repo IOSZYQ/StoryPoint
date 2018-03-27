@@ -18,7 +18,7 @@
                         {% else %}
                             <button type="button" class="btn btn-primary" onclick="javascript:editMember({{ group.id }}, {{ user.id }}, '{{ user.username }}', '{{ user.email }}', 0)">编辑</button>
                         {% endif %}
-                        <a type="button" class="btn btn-danger" href="javascript:deleteMember({{ user.id }})">删除成员</a>
+                        <a type="button" class="btn btn-danger" href="javascript:deleteMember({{ user.id }},{{ group.id }})">删除成员</a>
                     </td>
                 {% endif %}
             </tr>
