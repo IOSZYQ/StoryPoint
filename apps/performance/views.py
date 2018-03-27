@@ -104,6 +104,7 @@ class DepartmentPerformanceView(View):
         sp = 0
         for project in all_project:
             sp += project.getSP()
+        sp = round(sp, 1)
         score = round(sp/months/5,1)
         if score > 100:
             score = 100
@@ -138,12 +139,14 @@ class GroupPerformanceView(View):
             if task.project.end_time != None and task.project.end_time > start and task.project.end_time < end:
                 all_task.append(task)
                 gsp += task.getSP()
+        gsp = round(gsp, 1)
         score = round(gsp/months, 1)
         if score > 100:
             score = 100
         kpiurl = reverse('performance:group_detail',kwargs={"group_id":group_id})
         return render(request, 'kpi-detail-team.html', {
-            'gsp':gsp,'all_task':all_task,
+            'gsp':gsp,
+            'all_task':all_task,
             'group':Group.objects.get(pk=group_id),
             'score':score,
             'url':kpiurl,
@@ -171,6 +174,7 @@ class UserPerformanceView(View):
                 print(person_task.task.project.end_time)
                 psp += person_task.getSP()
                 data.append(person_task)
+        psp = round(psp, 1)
         score = round(psp/months, 1)
         if score > 100:
             score = 100

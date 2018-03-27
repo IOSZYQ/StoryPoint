@@ -18,7 +18,7 @@ class ProjectListView(View):
         projectname= request.GET.get('projectname','')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
         end = getMonthLastDay(year=int(endyear), month=int(endmonth))
-        all_project = Project.objects.filter(end_time__range=[start, end])
+        all_project = Project.objects.filter(end_time__range=[start, end]).order_by('-edit_time')
 
         manager_name = request.GET.get('manager', '全部')
         if manager_name != '全部':
@@ -180,6 +180,9 @@ class CreateEditTaskInfoView(View):
             task.description = description
             task.save()
             result = {'status':0}
+            project = Project.objects.filter(pk=projectId).last()
+            if project != None:
+                project.save()
             return HttpResponse(dumps(result), content_type='application/json')
         else:
             result = {'status':-1, 'msg':"{0}".format(task_form.errors)}
@@ -209,6 +212,9 @@ class EditTaskDetailView(View):
                     if person_task != None:
                         person_task.delete()
             task.save()
+            project = Project.objects.filter(pk=task.project.id).last()
+            if project != None:
+                project.save()
             return HttpResponse(dumps({'status':0}), content_type='application/json')
         else:
             return HttpResponse(dumps({'status':-1, 'msg':'信息不全'}),
@@ -220,6 +226,9 @@ class deleteTaskView(View):
         task = Task.objects.get(pk=task_id)
         if task != None:
             task.delete()
+            project = Project.objects.filter(pk=task.project.id).last()
+            if project != None:
+                project.save()
         return HttpResponse(dumps({'status':0}))
 
 class getTask(View):

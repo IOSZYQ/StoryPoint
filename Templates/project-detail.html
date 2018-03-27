@@ -22,6 +22,11 @@
             <td>项目状态：{{ project.get_status_display }}</td>
             <td></td>
         </tr>
+        <tr>
+            <td>预计终止时间：{{ project.expect_end_time }}</td>
+            <td>实际终止时间：{{ project.end_time }}</td>
+            <td></td>
+        </tr>
         </tbody>
     </table>
 
@@ -80,6 +85,7 @@
             {% for task in tasks %}
                 <tr>
                     <td colspan="2">{{ task.group.name }}  {{ task.get_status_display }}    标准GSP: {{ task.gsp }}</td>
+                    <td>{{ task.edit_time }}</td>
                     {% if request.user.is_superuser  or request.user.id == project.manager.id or request.user.id == task.group.leader.id %}
                         <td>
                             <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
@@ -95,7 +101,7 @@
                 </tr>
                 <tr>
                     <td colspan="2"></td>
-                    <td>{{ task.create }}</td>
+                    <td colspan="2"></td>
                 </tr>
             {% endfor %}
 

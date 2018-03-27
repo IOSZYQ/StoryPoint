@@ -16,6 +16,7 @@ class Project(models.Model):
     start_time = models.DateField(auto_now_add=True,verbose_name="项目开始时间")
     end_time = models.DateField(auto_now_add=True,verbose_name="实际终止时间")
     expect_end_time = models.DateField(auto_now_add=True,verbose_name="预计终止时间")
+    edit_time = models.DateTimeField(auto_now=True,verbose_name="最后修改时间")
     executing = models.IntegerField(default=0, verbose_name="项目执行时间")
     acceptance = models.IntegerField(default=0,verbose_name="项目验收时间")
     sp = models.IntegerField(verbose_name="项目SP值", default=0)
@@ -77,7 +78,7 @@ class Task(models.Model):
     project = models.ForeignKey(Project, verbose_name="项目", related_name="project_task")
     group = models.ForeignKey(Group, verbose_name="任务参与团队",null=True,blank=True, related_name="group_task")
     # members = models.ManyToManyField(UserProfile, verbose_name="任务参与人员", null=True, blank=True, related_name="tasks")
-
+    edit_time = models.DateTimeField(auto_now=True,verbose_name="最后修改时间")
     status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布")),default="executing",max_length=15)
     description = models.CharField(max_length=1000, null=True, blank=True)
     gsp = models.IntegerField(verbose_name="小组SP值", default=0)
@@ -126,6 +127,7 @@ class PersonTask(models.Model):
     task = models.ForeignKey(Task, verbose_name="小组任务", null=True, blank=True, related_name="person_task")
     create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
     status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后")),default="executing",max_length=15)
+    edit_time = models.DateTimeField(auto_now=True,verbose_name="最后修改时间")
 
     class Meta:
         verbose_name = "个人任务"
