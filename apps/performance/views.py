@@ -18,8 +18,8 @@ class PerformanceView(View):
         endyear = request.GET.get('endyear', '2018')
         endmonth = request.GET.get('endmonth', '12')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
-        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
-        all_project = Project.objects.filter(end_time__range=[start, end])
+        end = getNextMonthFirstDay(year=int(endyear), month=int(endmonth))
+        all_project = Project.objects.filter(end_time__range=[start, end],status='finish')
         months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear))*12
         if months < 1:
             months = 1
@@ -55,8 +55,8 @@ class UserListPerformanceView(View):
         endyear = request.GET.get('endyear', '2018')
         endmonth = request.GET.get('endmonth', '12')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
-        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
-        all_project = Project.objects.filter(end_time__range=[start, end])
+        end = getNextMonthFirstDay(year=int(endyear), month=int(endmonth))
+        all_project = Project.objects.filter(end_time__range=[start, end],status='finish')
         months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
         if months < 1:
             months = 1
@@ -68,7 +68,11 @@ class UserListPerformanceView(View):
             data[str(user.id)] = 0
             result.append({"id":str(user.id), 'name':user.username, 'jx':0})
         for project in all_project:
-            for task in project.project_task.all():
+            if project.manager != None:
+                data[str(project.manager.id)] += project.getManagerSP()
+            for task in project.project_task.filter(status='finish'):
+                if task.group.leader != None:
+                    data[str(task.group.leader.id)] += task.getGroupLeaderSP()
                 for person_task in task.person_task.all():
                     data[str(person_task.user.id)] += person_task.getSP()
         for dic in result:
@@ -96,8 +100,8 @@ class DepartmentPerformanceView(View):
         endyear = request.GET.get('endyear', '2018')
         endmonth = request.GET.get('endmonth', '12')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
-        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
-        all_project = Project.objects.filter(end_time__range=[start, end])
+        end = getNextMonthFirstDay(year=int(endyear), month=int(endmonth))
+        all_project = Project.objects.filter(end_time__range=[start, end],status='finish')
         months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
         if months < 1:
             months = 1
@@ -128,11 +132,11 @@ class GroupPerformanceView(View):
         endyear = request.GET.get('endyear', '2018')
         endmonth = request.GET.get('endmonth', '12')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
-        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
+        end = getNextMonthFirstDay(year=int(endyear), month=int(endmonth))
         months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
         if months < 1:
             months = 1
-        data = Task.objects.filter(group_id=group_id)
+        data = Task.objects.filter(group_id=group_id, project_status='finish', status='finish')
         all_task = []
         gsp = 0
         for task in data:
@@ -162,11 +166,11 @@ class UserPerformanceView(View):
         endyear = request.GET.get('endyear', '2018')
         endmonth = request.GET.get('endmonth', '12')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
-        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
+        end = getNextMonthFirstDay(year=int(endyear), month=int(endmonth))
         months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
         if months < 1:
             months = 1
-        person_tasks = PersonTask.objects.filter(user_id=user_id)
+        person_tasks = PersonTask.objects.filter(user_id=user_id,task_project_status='finish',task_status='finish')
         psp = 0
         data = []
         for person_task in person_tasks:
@@ -193,10 +197,18 @@ class UserPerformanceView(View):
 def getMonthFirstDay(year=2018, month=1):
     return date(year=int(year),month=int(month),day=1)
 
-def getMonthLastDay(year=2018, month=3):
+def getNextMonthFirstDay(year=2018, month=1):
     year = int(year)
     month = int(month)
     if month == 12:
         return date(year=year + 1, month=1, day=1) - timedelta(days=1)
     else:
         return date(year=year, month=month + 1, day=1) - timedelta(days=1)
+
+# def getMonthLastDay(year=2018, month=3):
+#     year = int(year)
+#     month = int(month)
+#     if month == 12:
+#         return date(year=year + 1, month=1, day=1) - timedelta(days=1)
+#     else:
+#         return date(year=year, month=month + 1, day=1) - timedelta(days=1)

@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^edit/$', CreateEditProjectInfoView.as_view(), name="edit_project"),
     url(r'^edit_detail/$', EditorProjectDetailView.as_view(), name="edit_project_detail"),
     url(r'^delete/$', deleteProjectView.as_view(), name="delete_project"),
+    url(r'^all_dic/$', AllGroupView.as_view(), name="group_dic"),
 
     url(r'^gettask/(?P<task_id>\d+)$', getTask.as_view(), name="task_info"),
 

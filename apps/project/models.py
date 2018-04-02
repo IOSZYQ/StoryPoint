@@ -28,7 +28,7 @@ class Project(models.Model):
     release_serious_bug = models.IntegerField(default=0, verbose_name="发布阶段严重缺陷")
     release_medium_bug = models.IntegerField(default=0, verbose_name="发布阶段中级缺陷")
     release_slight_bug = models.IntegerField(default=0, verbose_name="发布阶段低级缺陷")
-    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后")),default="executing",max_length=15)
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后"),("finish", "完成")),default="executing",max_length=15)
 
     class Meta:
         verbose_name = "项目"
@@ -73,6 +73,11 @@ class Project(models.Model):
     def getSP(self):
         return round(self.sp*self.weight*self.getScore() + 0.00000001,2)
 
+    def getManagerSP(self):
+        if self.manager != None:
+            return self.getSP()*0.05
+        return 0
+
 
 class Task(models.Model):
     project = models.ForeignKey(Project, verbose_name="项目", related_name="project_task")
@@ -83,7 +88,7 @@ class Task(models.Model):
     description = models.CharField(max_length=1000, null=True, blank=True)
     gsp = models.IntegerField(verbose_name="小组SP值", default=0)
     create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
-    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后")),default="executing",max_length=15)
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后"),("finish", "完成")),default="executing",max_length=15)
 
     class Meta:
         verbose_name = "小组任务"
@@ -115,6 +120,11 @@ class Task(models.Model):
     def getSP(self):
         return round(self.gsp*self.project.weight*self.getScore() + 0.00000001,1)
 
+    def getGroupLeaderSP(self):
+        if self.group.leader != None:
+            return self.getSP()*0.1
+        return 0
+
     def scoreDescription(self):
         return "{0}项目评分=消耗时间比({1})*{2}% + 发布缺陷比({3})*{4}% + 项目成效({5})*{6}%".format(self.group.name,self.project.getTimeProportion(),int(self.group.timeProportion*100), self.project.getReleaseBugProportion(), int(self.group.releaseBugProportion*100),self.project.impression, int(self.group.impressionProportion*100))
 
@@ -126,7 +136,7 @@ class PersonTask(models.Model):
     psp = models.IntegerField(verbose_name="个人sp值", default=0)
     task = models.ForeignKey(Task, verbose_name="小组任务", null=True, blank=True, related_name="person_task")
     create = models.DateField(auto_now_add=True, verbose_name="任务创建时间")
-    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后")),default="executing",max_length=15)
+    status = models.CharField(choices=(("executing","执行"),("acceptance","验收"),("release","发布"),("suspend","滞后"),("finish", "完成")),default="executing",max_length=15)
     edit_time = models.DateTimeField(auto_now=True,verbose_name="最后修改时间")
 
     class Meta:
@@ -144,11 +154,5 @@ class PersonTask(models.Model):
 
     def getSP(self):
         sp = self.psp*self.task.project.weight*self.getScore()
-        if self.task.group.leader != None:
-            if self.user.id == self.task.group.leader.id :
-                sp += self.task.getSP()*0.1
-        if self.task.project.manager != None:
-            if self.user.id == self.task.project.manager.id:
-                sp += self.task.project.getSP()*0.05
         return round(sp + 0.00000001,1)
 

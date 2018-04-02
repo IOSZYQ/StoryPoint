@@ -248,9 +248,12 @@ function buildProjectTask(projectId, task_id, taskStatus, taskGroup, taskDescrip
     var groups = [];
     $.ajax({
             type: 'GET',
-            url: '/group/all_dic/',
+            url: '/project/all_dic/',
             dataType: 'json',
             async:false,
+            data: {
+                projectId: projectId,
+            },
             success:function (data) {
                 if (data.status == 0) {
                     groups = data.result;
@@ -287,6 +290,8 @@ function buildProjectTask(projectId, task_id, taskStatus, taskGroup, taskDescrip
                                     else dialogString += '<option value="release">发布</option>';
                                     if (taskStatus == 'suspend') dialogString += '<option value="suspend" selected>滞后</option>';
                                     else dialogString += '<option value="suspend">滞后</option>';
+                                    if (taskStatus == 'finish') dialogString += '<option value="finish" selected>完成</option>';
+                                    else dialogString += '<option value="finish">完成</option>';
     dialogString +=
                                 '</select>' +
                                 '<label for="projectStatus3" class="col-md-3 control-label">分配部门：</label>' +

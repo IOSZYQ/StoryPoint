@@ -76,7 +76,8 @@
         <tbody>
             <tr>
                 <td colspan="2"><h4>部门任务</h4></td>
-                {% if request.user.is_superuser  or request.user.id == project.manager.id %}
+{#                {% if request.user.is_superuser  or request.user.id == project.manager.id %}#}
+                {% if groups %}
                     <td>
                         <a onclick="javascript:addTaskInfo({{ project.id }})">分配任务</a>
                     </td>
@@ -89,10 +90,10 @@
                     {% if request.user.is_superuser  or request.user.id == project.manager.id or request.user.id == task.group.leader.id %}
                         <td>
                             <a onclick="javascript:getTask({{ task.id }})" class="js-click">录入</a>
-                            {% if request.user.is_superuser  or request.user.id == project.manager.id %}
+{#                            {% if request.user.is_superuser  or request.user.id == project.manager.id %}#}
                                 <a onclick="javascript:editTaskInfo({{ project.id }}, {{ task.id }}, '{{ task.status }}', {{ task.group.id }}, '{{ task.description }}')">修改</a>
                                 <a onclick="javascript:deleteTaskInfo({{ task.id }})">删除</a>
-                            {% endif %}
+{#                            {% endif %}#}
                         </td>
                     {% endif %}
                 </tr>
@@ -222,6 +223,7 @@
                                 <option value="acceptance" {% ifequal project.status 'acceptance' %}selected{% endifequal %}>验收</option>
                                 <option value="release" {% ifequal project.status 'release' %}selected{% endifequal %}>发布</option>
                                 <option value="suspend" {% ifequal project.status 'suspend' %}selected{% endifequal %}>滞后</option>
+                                <option value="finish" {% ifequal project.status 'finish' %}selected{% endifequal %}>完成</option>
                             </select>
                             <input type="hidden" id="projectStatusHidden" name="projectStatusHidden" value="{{ project.status }}">
                         </div>

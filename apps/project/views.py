@@ -8,7 +8,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import *
 from .forms import *
-from performance.views import getMonthFirstDay,getMonthLastDay
+from performance.views import getMonthFirstDay,getNextMonthFirstDay
 class ProjectListView(View):
     def get(self, request):
         startyear = request.GET.get('startyear', '2018')
@@ -17,7 +17,7 @@ class ProjectListView(View):
         endmonth = request.GET.get('endmonth', '12')
         projectname= request.GET.get('projectname','')
         start = getMonthFirstDay(year=int(startyear), month=int(startmonth))
-        end = getMonthLastDay(year=int(endyear), month=int(endmonth))
+        end = getNextMonthFirstDay(year=int(endyear), month=int(endmonth))
         all_project = Project.objects.filter(end_time__range=[start, end]).order_by('-edit_time')
 
         manager_name = request.GET.get('manager', '全部')
@@ -153,7 +153,12 @@ class ProjectDetailView(View):
         info.append({"key":"产品研发部的项目评分={0}".format(project.getScore()),"value":"项目评分=消耗时间比*40% + 发布缺陷比*30% + 项目成效*30%"})
         info.append({"key":"产品研发部的项目SP值={0}".format(project.getSP()),"value":"项目SP值=项目标准SP值*权重*「部门／小组／个人」项目评分"})
         users = UserProfile.objects.order_by('id')
-        groups = Group.objects.order_by('id')
+        user = request.user
+        groups = None
+        if user.is_superuser == True or user.id == project.manager.id :
+            groups = Group.objects.order_by('id')
+        elif Group.objects.filter(leader_id = user.id):
+            groups = Group.objects.filter(leader_id = user.id)
         if project:
             return render(request, 'project-detail.html', {
                 "project":project,
@@ -236,3 +241,19 @@ class getTask(View):
         task = Task.objects.get(pk=task_id)
         task = task.getDic()
         return HttpResponse(dumps(task),content_type='application/json')
+
+class AllGroupView(View):
+    def get(self, request):
+        dic = []
+        projectId = request.GET.get('projectId')
+        project = Project.objects.filter(id=projectId).last()
+        group = []
+        user = request.user
+        if user.is_superuser or user.id == project.manager.id:
+            group = Group.objects.all()
+        elif Group.objects.filter(leader_id=request.user.id).last() != None:
+            group = Group.objects.filter(leader_id=request.user.id)
+        for group in group:
+            dic.append({'id':group.id,'name':group.name})
+        result = {'status': 0,'result':dic}
+        return HttpResponse(dumps(result), content_type='application/json')

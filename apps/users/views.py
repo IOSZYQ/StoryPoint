@@ -161,12 +161,14 @@ class LoginView(View):
             pass_word = request.POST.get("password", "")
             user = authenticate(username=user_name, password=pass_word)
             if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return HttpResponseRedirect(reverse('index'))
-                else:
-                    result = {'status': -1, 'msg': '用户未激活'}
-                    return HttpResponse(dumps(result), content_type='application/json')
+                login(request, user)
+                return HttpResponseRedirect(reverse('index'))
+                # if user.is_active:
+                #     login(request, user)
+                #     return HttpResponseRedirect(reverse('index'))
+                # else:
+                #     result = {'status': -1, 'msg': '用户未激活'}
+                #     return HttpResponse(dumps(result), content_type='application/json')
             else:
                 result = {'status': -1, 'msg': '用户名或密码错误'}
                 return HttpResponse(dumps(result), content_type='application/json')
