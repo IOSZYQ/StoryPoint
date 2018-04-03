@@ -136,7 +136,7 @@ class GroupPerformanceView(View):
         months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
         if months < 1:
             months = 1
-        data = Task.objects.filter(group_id=group_id, project_status='finish')
+        data = Task.objects.filter(group_id=group_id, project__status='finish')
         all_task = []
         gsp = 0
         for task in data:
@@ -170,7 +170,7 @@ class UserPerformanceView(View):
         months = (int(endmonth) - int(startmonth)) + 1 + (int(endyear) - int(startyear)) * 12
         if months < 1:
             months = 1
-        person_tasks = PersonTask.objects.filter(user_id=user_id,task_project_status='finish')
+        person_tasks = PersonTask.objects.filter(user_id=user_id,task__project__status='finish')
         psp = 0
         data = []
         for person_task in person_tasks:
